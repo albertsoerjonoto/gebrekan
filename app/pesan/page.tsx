@@ -198,14 +198,14 @@ export default function PesanPage() {
             }}
           >
             {guestStatus === "sending"
-              ? "ngirim ke sophia..."
+              ? "ngirim ke albert..."
               : guestStatus === "sent"
-                ? "✓ udh terkirim ke sophia"
-                : "kirim juga ke sophia ✉️"}
+                ? "✓ udh terkirim ke albert"
+                : "kirim juga ke albert ✉️"}
           </button>
           {guestStatus === "error" ? (
             <p className="text-sm text-red-500">
-              gagal kirim ke sophia: {guestErr ?? "coba lagi"}
+              gagal kirim ke albert: {guestErr ?? "coba lagi"}
             </p>
           ) : null}
         </div>
