@@ -41,7 +41,7 @@ export default function NgapainPage() {
   return (
     <PageShell
       page="ngapain"
-      title="milih mau ngapain"
+      title="mau ngapain"
       back={{ href: backHref }}
     >
       <div className="flex flex-col gap-3">
