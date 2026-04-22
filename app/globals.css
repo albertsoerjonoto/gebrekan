@@ -43,6 +43,8 @@ body {
 .pyramid-btn:active { transform: translateY(0); filter: brightness(0.95); }
 
 .option-card {
+  -webkit-appearance: none;
+  appearance: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
