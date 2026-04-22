@@ -115,8 +115,8 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   pizza_4p: { label: "pizza 4p", emoji: "🧀" },
   nonna_bona: { label: "nonna bona", emoji: "🍝" },
   le_quartier: { label: "le quartier", emoji: "🥩" },
-  txoko_senop: { label: "txoko senop", emoji: "🥘" },
-  babylon_garden: { label: "babylon garden affair", emoji: "🥂" },
+  txoko_senop: { label: "txoko", emoji: "🥘" },
+  babylon_garden: { label: "babylon", emoji: "🥂" },
 };
 
 export function isWeekend(day: DayKey | null | undefined): boolean {
