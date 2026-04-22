@@ -80,7 +80,7 @@ body {
 .meerkat-wrap {
   position: fixed;
   left: 50%;
-  bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  bottom: 1.5vw;
   width: clamp(110px, 26vw, 170px);
   aspect-ratio: 1 / 1;
   pointer-events: none;
