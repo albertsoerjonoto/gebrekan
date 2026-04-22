@@ -23,13 +23,13 @@ export function MeerkatDoll() {
   return (
     <div key={scene} className="meerkat-wrap" aria-hidden="true">
       <img
-        src={`/meerkat/${scene}-a.jpg`}
+        src={`/meerkat/${scene}-a.png`}
         alt=""
         className="meerkat-frame meerkat-a"
         onError={() => setFailed(true)}
       />
       <img
-        src={`/meerkat/${scene}-b.jpg`}
+        src={`/meerkat/${scene}-b.png`}
         alt=""
         className="meerkat-frame meerkat-b"
         onError={() => setFailed(true)}
