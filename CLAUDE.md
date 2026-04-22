@@ -50,11 +50,27 @@ OAuth entirely.
 
 - Production URL: `https://gebrekan.vercel.app` (or the project's actual domain)
 - Required env vars in Vercel: `DATABASE_URL` (auto from Neon integration),
-  `ADMIN_TOKEN` (random string, gates `/inbox`)
+  `ADMIN_TOKEN` (random string, gates `/inbox`), `RESEND_API_KEY` (owner
+  confirmation emails), optional `EMAIL_FROM` (verified sender for Resend).
 - Schema: `drizzle/schema.sql`. Apply once with `npm run db:init` (needs
   `DATABASE_URL` in env).
 - Dev: `npm run dev`
 - Build check: `npm run build` (run before declaring work done)
+
+## do-not-touch: sophia email button
+
+The `pesan` page has a `kirim juga ke sophia ✉️` button that forwards the
+submission to `sophiatick@gmail.com` (the recipient). This send is **opt-in
+and must be triggered by the human owner only**.
+
+- **Never** click / submit / fetch-POST that button, and never call
+  `/api/submit` with `notifyGuest: true` while testing, scripting, or
+  end-to-end-verifying anything — that emails a real person.
+- For verification, only exercise the auto-submit path (owner email to
+  `albertsoerjonoto98@gmail.com`), or stub `RESEND_API_KEY` / the `fetch` to
+  Resend out.
+- The auto-submit on `/pesan` mount is safe: it sends only to the owner.
+  Anything that would additionally hit `GUEST_EMAIL` is off-limits.
 
 ## data model
 
