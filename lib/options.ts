@@ -21,7 +21,6 @@ export type DayKey =
   | "sabtu_ini"
   | "minggu_ini"
   | "selasa_depan"
-  | "rabu_depan"
   | "kamis_depan";
 
 export type DayTime = "AM" | "PM";
@@ -39,7 +38,6 @@ export const DAY_OPTIONS: {
   { key: "sabtu_ini", label: "sabtu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "minggu_ini", label: "minggu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "selasa_depan", label: "selasa depan", emoji: "🌔", time: "PM", category: "weekday", tone: "night" },
-  { key: "rabu_depan", label: "rabu depan", emoji: "🌔", time: "PM", category: "weekday", tone: "night" },
   { key: "kamis_depan", label: "kamis depan", emoji: "🌕", time: "PM", category: "weekday", tone: "night" },
 ];
 
