@@ -15,31 +15,25 @@ import {
 import { useFormState } from "@/lib/state";
 
 type SendState = "idle" | "sending" | "sent" | "error";
-type GuestState = "idle" | "sending" | "sent" | "error";
 type EmailStatus = "sent" | "skipped" | "failed" | "not-attempted";
 
 type SubmitResponse = {
   ok: boolean;
   email?: {
     owner: EmailStatus;
-    guest: EmailStatus;
     ownerError?: string;
-    guestError?: string;
   };
 };
 
 export default function PesanPage() {
-  const { state, sessionId, setMessage, hydrated } = useFormState();
+  const { state, sessionId, hydrated } = useFormState();
   const router = useRouter();
   const accent = getAccent(state.berani);
   const [status, setStatus] = useState<SendState>("idle");
-  const [err, setErr] = useState<string | null>(null);
+  const [, setErr] = useState<string | null>(null);
   const [ownerEmail, setOwnerEmail] = useState<EmailStatus | null>(null);
   const [ownerEmailErr, setOwnerEmailErr] = useState<string | null>(null);
-  const [guestStatus, setGuestStatus] = useState<GuestState>("idle");
-  const [guestErr, setGuestErr] = useState<string | null>(null);
   const didAutoSubmit = useRef(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inFlightRef = useRef(false);
 
   useEffect(() => {
@@ -47,57 +41,35 @@ export default function PesanPage() {
     if (!isFlowComplete({ ...state })) router.replace("/ngapain");
   }, [hydrated, state, router]);
 
-  const submit = useCallback(
-    async (opts?: { notifyGuest?: boolean }) => {
-      if (!sessionId || !isFlowComplete({ ...state })) return false;
-      if (inFlightRef.current) return false;
-      inFlightRef.current = true;
-      const notifyGuest = !!opts?.notifyGuest;
-      if (notifyGuest) {
-        setGuestStatus("sending");
-        setGuestErr(null);
-      } else {
-        setStatus("sending");
-        setErr(null);
+  const submit = useCallback(async () => {
+    if (!sessionId || !isFlowComplete({ ...state })) return false;
+    if (inFlightRef.current) return false;
+    inFlightRef.current = true;
+    setStatus("sending");
+    setErr(null);
+    try {
+      const res = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ sessionId, state }),
+      });
+      if (!res.ok) throw new Error(`submit failed (${res.status})`);
+      const data = (await res.json().catch(() => ({}))) as SubmitResponse;
+      if (data.email) {
+        setOwnerEmail(data.email.owner);
+        setOwnerEmailErr(data.email.ownerError ?? null);
       }
-      try {
-        const res = await fetch("/api/submit", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ sessionId, state, notifyGuest }),
-        });
-        if (!res.ok) throw new Error(`submit failed (${res.status})`);
-        const data = (await res.json().catch(() => ({}))) as SubmitResponse;
-        if (data.email) {
-          setOwnerEmail(data.email.owner);
-          setOwnerEmailErr(data.email.ownerError ?? null);
-          if (notifyGuest) {
-            if (data.email.guest === "sent") setGuestStatus("sent");
-            else {
-              setGuestStatus("error");
-              setGuestErr(data.email.guestError ?? "email provider error");
-            }
-          }
-        }
-        if (!notifyGuest) setStatus("sent");
-        else if (data.email?.guest === "sent") setGuestStatus("sent");
-        return true;
-      } catch (e) {
-        const message = e instanceof Error ? e.message : "submit failed";
-        if (notifyGuest) {
-          setGuestStatus("error");
-          setGuestErr(message);
-        } else {
-          setStatus("error");
-          setErr(message);
-        }
-        return false;
-      } finally {
-        inFlightRef.current = false;
-      }
-    },
-    [sessionId, state],
-  );
+      setStatus("sent");
+      return true;
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "submit failed";
+      setStatus("error");
+      setErr(message);
+      return false;
+    } finally {
+      inFlightRef.current = false;
+    }
+  }, [sessionId, state]);
 
   useEffect(() => {
     if (!hydrated || !sessionId) return;
@@ -106,16 +78,6 @@ export default function PesanPage() {
     didAutoSubmit.current = true;
     void submit();
   }, [hydrated, sessionId, state, submit]);
-
-  const onMessageChange = (v: string) => {
-    setMessage(v);
-    if (!didAutoSubmit.current) return;
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    setStatus("sending");
-    debounceRef.current = setTimeout(() => {
-      void submit();
-    }, 1200);
-  };
 
   const beraniLabel = BERANI_OPTIONS.find((b) => b.key === state.berani)?.label;
   const dayOpt = DAY_OPTIONS.find((d) => d.key === state.day);
@@ -148,20 +110,6 @@ export default function PesanPage() {
           {actLabel ? <Row label="ngapain" value={`${actLabel.emoji} ${actLabel.label}`} /> : null}
         </div>
 
-        <label className="flex flex-col gap-2">
-          <textarea
-            value={state.message}
-            onChange={(e) => onMessageChange(e.target.value)}
-            rows={4}
-            placeholder=""
-            className="rounded-2xl border bg-transparent p-3 outline-none focus:ring-2"
-            style={{
-              borderColor: "var(--border)",
-              color: "var(--fg)",
-            }}
-          />
-        </label>
-
         {status === "error" ? (
           <button
             type="button"
@@ -184,32 +132,6 @@ export default function PesanPage() {
             {ownerEmailErr ? <span className="opacity-70">detail: {ownerEmailErr}</span> : null}
           </div>
         ) : null}
-
-        <div className="mt-2 flex flex-col gap-2">
-          <button
-            type="button"
-            onClick={() => void submit({ notifyGuest: true })}
-            disabled={guestStatus === "sending" || guestStatus === "sent"}
-            className="nav-btn"
-            data-variant="primary"
-            style={{
-              background: accent,
-              color: "#fff",
-              opacity: guestStatus === "sending" || guestStatus === "sent" ? 0.6 : 1,
-            }}
-          >
-            {guestStatus === "sending"
-              ? "ngirim ke albert..."
-              : guestStatus === "sent"
-                ? "✓ udh terkirim ke albert"
-                : "kirim juga ke albert ✉️"}
-          </button>
-          {guestStatus === "error" ? (
-            <p className="text-sm text-red-500">
-              gagal kirim ke albert: {guestErr ?? "coba lagi"}
-            </p>
-          ) : null}
-        </div>
       </div>
     </PageShell>
     </>
