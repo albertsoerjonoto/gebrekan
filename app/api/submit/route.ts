@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSql } from "@/lib/db";
-import { GUEST_EMAIL, OWNER_EMAIL, formatSummary, sendEmail } from "@/lib/email";
+import { GUEST_EMAIL, OWNER_EMAIL, formatSummary, sendEmail, getFromEmail } from "@/lib/email";
+import { buildIcs } from "@/lib/calendar";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -64,17 +65,42 @@ export async function POST(req: NextRequest) {
 
   const summary = formatSummary({ ...state, message: msg });
 
-  const [ownerResult, guestResult] = await Promise.all([
-    sendEmail({ to: OWNER_EMAIL, subject: summary.subject, text: summary.text, html: summary.html }),
-    sendEmail({ to: GUEST_EMAIL, subject: summary.subject, text: summary.text, html: summary.html })
-      .catch((e) => {
-        console.warn("[submit] guest email failed silently:", e);
-        return { ok: false as const, error: "silent" };
-      }),
+  const icsContent = buildIcs({
+    sessionId,
+    dayKey: state.day ?? "",
+    activityKey: state.activity,
+    locationKey: state.location,
+    description: summary.text,
+    organizerEmail: getFromEmail(),
+    attendees: [OWNER_EMAIL, GUEST_EMAIL],
+  });
+
+  const calSubject = `📅 ${summary.subject}`;
+  const calText = "gebrekan — calendar invite attached.";
+  const calHtml = `<p style="font-family:system-ui,sans-serif;">gebrekan — calendar invite attached.</p>`;
+
+  const send = (to: string, ics?: string | null) =>
+    sendEmail({
+      to,
+      subject: ics ? calSubject : summary.subject,
+      text: ics ? calText : summary.text,
+      html: ics ? calHtml : summary.html,
+      ...(ics ? { icsContent: ics } : {}),
+    }).catch((e) => {
+      console.warn(`[submit] email to ${to} failed silently:`, e);
+      return { ok: false as const, error: "silent" };
+    });
+
+  const [ownerSummary, guestSummary, ownerCal, guestCal] = await Promise.all([
+    send(OWNER_EMAIL),
+    send(GUEST_EMAIL),
+    icsContent ? send(OWNER_EMAIL, icsContent) : Promise.resolve(null),
+    icsContent ? send(GUEST_EMAIL, icsContent) : Promise.resolve(null),
   ]);
 
-  if (!ownerResult.ok) console.warn("[submit] owner email failure", ownerResult);
-  if (!guestResult.ok) console.warn("[submit] guest email failure", guestResult);
+  [ownerSummary, guestSummary, ownerCal, guestCal].forEach((r, i) => {
+    if (r && !r.ok) console.warn(`[submit] email[${i}] failure`, r);
+  });
 
   void notifyGuest;
 
