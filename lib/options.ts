@@ -93,7 +93,6 @@ export type ActivityKey =
   | "nonna_bona"
   | "le_quartier"
   | "txoko_senop"
-  | "vong_kitchen"
   | "babylon_garden";
 
 export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string; note?: string }> = {
@@ -116,9 +115,8 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   pizza_4p: { label: "pizza 4p", emoji: "🧀" },
   nonna_bona: { label: "nonna bona", emoji: "🍝" },
   le_quartier: { label: "le quartier", emoji: "🥩" },
-  txoko_senop: { label: "txoko senop", emoji: "🥘" },
-  vong_kitchen: { label: "vong kitchen", emoji: "🍕" },
-  babylon_garden: { label: "babylon garden affair", emoji: "🥂" },
+  txoko_senop: { label: "txoko", emoji: "🥘" },
+  babylon_garden: { label: "babylon", emoji: "🥂" },
 };
 
 export function isWeekend(day: DayKey | null | undefined): boolean {
@@ -191,7 +189,7 @@ export function allowedActivities(opts: {
   if (effLoc === "bekasi") return ["trans_snow"];
 
   if (berani === "udh_haha") {
-    if (isWeekday(day)) return ["pizza_4p", "nonna_bona", "le_quartier", "txoko_senop", "vong_kitchen", "babylon_garden"];
+    if (isWeekday(day)) return ["pizza_4p", "nonna_bona", "le_quartier", "txoko_senop", "babylon_garden"];
     if (effLoc === "jakarta") return ["faunaland", "jetski", "karting", "skorz"];
     if (effLoc === "karawaci") {
       return ["karting", "timezone_karawaci", "bouncestreet", "masak_rumah", "nyapu_pel", "jalan_mall"];
