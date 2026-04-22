@@ -21,7 +21,7 @@ export function MeerkatDoll() {
   if (!scene || failed) return null;
 
   return (
-    <div key={scene} className="meerkat-wrap" aria-hidden="true">
+    <div key={scene} className="meerkat-wrap" data-scene={scene} aria-hidden="true">
       <img
         src={`/meerkat/${scene}-a.png`}
         alt=""

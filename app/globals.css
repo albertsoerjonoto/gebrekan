@@ -85,6 +85,10 @@ body {
   z-index: 40;
   animation: meerkat-float 3.2s ease-in-out infinite;
 }
+.meerkat-wrap[data-scene="berani"] {
+  width: clamp(140px, 33vw, 215px);
+  bottom: 0;
+}
 .meerkat-frame {
   position: absolute;
   inset: 0;
