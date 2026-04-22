@@ -57,11 +57,12 @@ OAuth entirely.
 - Dev: `npm run dev`
 - Build check: `npm run build` (run before declaring work done)
 
-## do-not-touch: sophia email button
+## do-not-touch: guest-forward email button
 
-The `pesan` page has a `kirim juga ke sophia ✉️` button that forwards the
-submission to `sophiatick@gmail.com` (the recipient). This send is **opt-in
-and must be triggered by the human owner only**.
+The `pesan` page has a `kirim juga ke albert ✉️` button that forwards the
+submission to `albert.soerjonoto@gmail.com` (the guest recipient — see
+`GUEST_EMAIL` in `lib/email.ts`). This send is **opt-in and must be
+triggered by the human owner only**.
 
 - **Never** click / submit / fetch-POST that button, and never call
   `/api/submit` with `notifyGuest: true` while testing, scripting, or
