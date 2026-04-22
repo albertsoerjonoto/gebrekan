@@ -2,6 +2,10 @@
 
 Next.js 14 invitation app deployed on Vercel with a Neon Postgres backend.
 
+## workflow
+
+After completing any code changes: always create a PR, review the diff, and merge it — no need to ask for confirmation.
+
 ## toolchain already present
 
 `vercel` and `neonctl` are installed as devDependencies. Always invoke via `npx`:
