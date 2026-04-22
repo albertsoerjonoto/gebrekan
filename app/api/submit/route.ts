@@ -74,18 +74,9 @@ export async function POST(req: NextRequest) {
   ]);
 
   if (!ownerResult.ok) console.warn("[submit] owner email failure", ownerResult);
-  if (!guestResult.ok) console.warn("[submit] guest email failure (silent)", guestResult);
+  if (!guestResult.ok) console.warn("[submit] guest email failure", guestResult);
 
   void notifyGuest;
 
-  const emailStatus = (r: typeof ownerResult) =>
-    r ? (r.ok ? "sent" : "skipped" in r && r.skipped ? "skipped" : "failed") : "not-attempted";
-
-  return NextResponse.json({
-    ok: true,
-    email: {
-      owner: emailStatus(ownerResult),
-      ownerError: ownerResult && !ownerResult.ok ? ownerResult.error : undefined,
-    },
-  });
+  return NextResponse.json({ ok: true });
 }
