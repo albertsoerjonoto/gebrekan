@@ -15,24 +15,12 @@ import {
 import { useFormState } from "@/lib/state";
 
 type SendState = "idle" | "sending" | "sent" | "error";
-type EmailStatus = "sent" | "skipped" | "failed" | "not-attempted";
-
-type SubmitResponse = {
-  ok: boolean;
-  email?: {
-    owner: EmailStatus;
-    ownerError?: string;
-  };
-};
 
 export default function PesanPage() {
   const { state, sessionId, hydrated } = useFormState();
   const router = useRouter();
   const accent = getAccent(state.berani);
   const [status, setStatus] = useState<SendState>("idle");
-  const [, setErr] = useState<string | null>(null);
-  const [ownerEmail, setOwnerEmail] = useState<EmailStatus | null>(null);
-  const [ownerEmailErr, setOwnerEmailErr] = useState<string | null>(null);
   const didAutoSubmit = useRef(false);
   const inFlightRef = useRef(false);
 
@@ -46,7 +34,6 @@ export default function PesanPage() {
     if (inFlightRef.current) return false;
     inFlightRef.current = true;
     setStatus("sending");
-    setErr(null);
     try {
       const res = await fetch("/api/submit", {
         method: "POST",
@@ -54,17 +41,11 @@ export default function PesanPage() {
         body: JSON.stringify({ sessionId, state }),
       });
       if (!res.ok) throw new Error(`submit failed (${res.status})`);
-      const data = (await res.json().catch(() => ({}))) as SubmitResponse;
-      if (data.email) {
-        setOwnerEmail(data.email.owner);
-        setOwnerEmailErr(data.email.ownerError ?? null);
-      }
+      await res.json().catch(() => {});
       setStatus("sent");
       return true;
-    } catch (e) {
-      const message = e instanceof Error ? e.message : "submit failed";
+    } catch {
       setStatus("error");
-      setErr(message);
       return false;
     } finally {
       inFlightRef.current = false;
@@ -121,17 +102,6 @@ export default function PesanPage() {
           </button>
         ) : null}
 
-        {status === "sent" && ownerEmail && ownerEmail !== "sent" ? (
-          <div
-            className="rounded-2xl px-4 py-3 text-xs"
-            style={{ background: "#fff5e6", color: "#8a5a00", border: "1px solid #f0c060" }}
-          >
-            ⚠ email notif gagal dikirim ke owner (
-            {ownerEmail === "skipped" ? "RESEND_API_KEY belum di-set di Vercel" : "resend error"}
-            ).{" "}
-            {ownerEmailErr ? <span className="opacity-70">detail: {ownerEmailErr}</span> : null}
-          </div>
-        ) : null}
       </div>
     </PageShell>
     </>

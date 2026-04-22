@@ -63,35 +63,20 @@ export async function POST(req: NextRequest) {
   }
 
   const summary = formatSummary({ ...state, message: msg });
-  const recipients = notifyGuest ? [OWNER_EMAIL, GUEST_EMAIL] : [OWNER_EMAIL];
 
-  const results = await Promise.all(
-    recipients.map(async (to) => ({
-      to,
-      result: await sendEmail({
-        to,
-        subject: summary.subject,
-        text: summary.text,
-        html: summary.html,
+  const [ownerResult, guestResult] = await Promise.all([
+    sendEmail({ to: OWNER_EMAIL, subject: summary.subject, text: summary.text, html: summary.html }),
+    sendEmail({ to: GUEST_EMAIL, subject: summary.subject, text: summary.text, html: summary.html })
+      .catch((e) => {
+        console.warn("[submit] guest email failed silently:", e);
+        return { ok: false as const, error: "silent" };
       }),
-    })),
-  );
+  ]);
 
-  const ownerResult = results.find((r) => r.to === OWNER_EMAIL)?.result;
-  const guestResult = results.find((r) => r.to === GUEST_EMAIL)?.result;
-  const anyFailed = results.some((r) => !r.result.ok);
-  if (anyFailed) console.warn("[submit] email failures", results);
+  if (!ownerResult.ok) console.warn("[submit] owner email failure", ownerResult);
+  if (!guestResult.ok) console.warn("[submit] guest email failure", guestResult);
 
-  const emailStatus = (r: typeof ownerResult) =>
-    r ? (r.ok ? "sent" : r.skipped ? "skipped" : "failed") : "not-attempted";
+  void notifyGuest;
 
-  return NextResponse.json({
-    ok: true,
-    email: {
-      owner: emailStatus(ownerResult),
-      guest: emailStatus(guestResult),
-      ownerError: ownerResult && !ownerResult.ok ? ownerResult.error : undefined,
-      guestError: guestResult && !guestResult.ok ? guestResult.error : undefined,
-    },
-  });
+  return NextResponse.json({ ok: true });
 }
