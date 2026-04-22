@@ -113,3 +113,16 @@ body {
   .meerkat-a, .meerkat-b { animation: none; }
   .meerkat-b { opacity: 0; }
 }
+
+.confetti-piece {
+  position: fixed;
+  top: -20px;
+  pointer-events: none;
+  z-index: 30;
+  border-radius: 2px;
+  animation: confetti-fall linear infinite;
+}
+@keyframes confetti-fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(800deg); opacity: 0.4; }
+}

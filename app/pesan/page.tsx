@@ -123,6 +123,8 @@ export default function PesanPage() {
   const actLabel = state.activity ? ACTIVITY_LABELS[state.activity] : null;
 
   return (
+    <>
+      <Confetti />
     <PageShell
       page="pesan"
       title="yeayy"
@@ -147,12 +149,11 @@ export default function PesanPage() {
         </div>
 
         <label className="flex flex-col gap-2">
-          <span className="text-sm opacity-70">mau nulis pesan?</span>
           <textarea
             value={state.message}
             onChange={(e) => onMessageChange(e.target.value)}
             rows={4}
-            placeholder="opsional ya — kesimpen otomatis"
+            placeholder=""
             className="rounded-2xl border bg-transparent p-3 outline-none focus:ring-2"
             style={{
               borderColor: "var(--border)",
@@ -211,6 +212,51 @@ export default function PesanPage() {
         </div>
       </div>
     </PageShell>
+    </>
+  );
+}
+
+const CONFETTI = [
+  { left:"5%",  w:7,  h:11, color:"#CE3D66", delay:0,    dur:2.8 },
+  { left:"12%", w:9,  h:7,  color:"#0072BB", delay:0.4,  dur:3.2 },
+  { left:"20%", w:6,  h:10, color:"#FFD700", delay:0.9,  dur:2.5 },
+  { left:"28%", w:8,  h:8,  color:"#FF69B4", delay:0.2,  dur:3.6 },
+  { left:"35%", w:10, h:6,  color:"#CE3D66", delay:1.1,  dur:2.9 },
+  { left:"43%", w:7,  h:12, color:"#0072BB", delay:0.6,  dur:3.1 },
+  { left:"50%", w:9,  h:7,  color:"#FFD700", delay:1.5,  dur:2.7 },
+  { left:"58%", w:6,  h:9,  color:"#FF69B4", delay:0.3,  dur:3.4 },
+  { left:"65%", w:8,  h:10, color:"#CE3D66", delay:0.8,  dur:2.6 },
+  { left:"72%", w:10, h:7,  color:"#0072BB", delay:1.3,  dur:3.0 },
+  { left:"80%", w:7,  h:8,  color:"#FFD700", delay:0.1,  dur:3.3 },
+  { left:"88%", w:9,  h:11, color:"#FF69B4", delay:0.7,  dur:2.4 },
+  { left:"95%", w:6,  h:7,  color:"#CE3D66", delay:1.0,  dur:3.5 },
+  { left:"8%",  w:8,  h:9,  color:"#FFD700", delay:1.8,  dur:2.8 },
+  { left:"16%", w:7,  h:6,  color:"#FF69B4", delay:2.1,  dur:3.1 },
+  { left:"33%", w:10, h:11, color:"#0072BB", delay:1.6,  dur:2.5 },
+  { left:"55%", w:6,  h:8,  color:"#CE3D66", delay:2.4,  dur:3.2 },
+  { left:"76%", w:9,  h:7,  color:"#FFD700", delay:1.9,  dur:2.9 },
+  { left:"92%", w:7,  h:10, color:"#FF69B4", delay:2.6,  dur:3.4 },
+  { left:"48%", w:8,  h:6,  color:"#0072BB", delay:2.0,  dur:2.6 },
+];
+
+function Confetti() {
+  return (
+    <>
+      {CONFETTI.map((c, i) => (
+        <div
+          key={i}
+          className="confetti-piece"
+          style={{
+            left: c.left,
+            width: c.w,
+            height: c.h,
+            background: c.color,
+            animationDuration: `${c.dur}s`,
+            animationDelay: `${c.delay}s`,
+          }}
+        />
+      ))}
+    </>
   );
 }
 
