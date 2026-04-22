@@ -94,7 +94,7 @@ export type ActivityKey =
   | "txoko_senop"
   | "manzo"
   | "sophilia"
-  | "babylon_garden";
+  | "singapolah";
 
 export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string; note?: string }> = {
   karting: { label: "karting", emoji: "🏎️" },
@@ -118,7 +118,7 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   txoko_senop: { label: "txoko", emoji: "🥘" },
   manzo: { label: "manzo", emoji: "🎷" },
   sophilia: { label: "sophilia", emoji: "🖼️" },
-  babylon_garden: { label: "babylon", emoji: "🥂" },
+  singapolah: { label: "singapolah", emoji: "🤪" },
 };
 
 export function isWeekend(day: DayKey | null | undefined): boolean {
@@ -194,7 +194,7 @@ export function allowedActivities(opts: {
     if (isWeekday(day)) {
       const acts: ActivityKey[] = ["pizza_4p", "le_quartier", "txoko_senop"];
       if (day === "jumat_ini") acts.push("manzo");
-      acts.push("babylon_garden");
+      acts.push("singapolah");
       return acts;
     }
     if (effLoc === "jakarta") {
@@ -219,7 +219,7 @@ export function allowedActivities(opts: {
     if (hasGoltox) out.push("pbtp");
     if (hasAndreaOrChristine) out.push("mata_karanjang", "amanaia_satrio");
     if (day === "jumat_ini") out.push("manzo");
-    out.push("babylon_garden");
+    out.push("singapolah");
     return out;
   }
 
