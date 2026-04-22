@@ -63,18 +63,35 @@ export async function POST(req: NextRequest) {
   }
 
   const summary = formatSummary({ ...state, message: msg });
-  const recipients = [OWNER_EMAIL];
-  if (notifyGuest) recipients.push(GUEST_EMAIL);
+  const recipients = notifyGuest ? [OWNER_EMAIL, GUEST_EMAIL] : [OWNER_EMAIL];
 
   const results = await Promise.all(
-    recipients.map((to) =>
-      sendEmail({ to, subject: summary.subject, text: summary.text, html: summary.html }),
-    ),
+    recipients.map(async (to) => ({
+      to,
+      result: await sendEmail({
+        to,
+        subject: summary.subject,
+        text: summary.text,
+        html: summary.html,
+      }),
+    })),
   );
-  const emailOk = results.every((r) => r.ok);
-  if (!emailOk) {
-    console.warn("one or more confirmation emails failed", results);
-  }
 
-  return NextResponse.json({ ok: true, email: emailOk, sentToGuest: !!notifyGuest && emailOk });
+  const ownerResult = results.find((r) => r.to === OWNER_EMAIL)?.result;
+  const guestResult = results.find((r) => r.to === GUEST_EMAIL)?.result;
+  const anyFailed = results.some((r) => !r.result.ok);
+  if (anyFailed) console.warn("[submit] email failures", results);
+
+  const emailStatus = (r: typeof ownerResult) =>
+    r ? (r.ok ? "sent" : r.skipped ? "skipped" : "failed") : "not-attempted";
+
+  return NextResponse.json({
+    ok: true,
+    email: {
+      owner: emailStatus(ownerResult),
+      guest: emailStatus(guestResult),
+      ownerError: ownerResult && !ownerResult.ok ? ownerResult.error : undefined,
+      guestError: guestResult && !guestResult.ok ? guestResult.error : undefined,
+    },
+  });
 }

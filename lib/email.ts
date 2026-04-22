@@ -99,7 +99,9 @@ function escapeHtml(s: string): string {
     .replace(/'/g, "&#39;");
 }
 
-type SendResult = { ok: true } | { ok: false; error: string; skipped?: boolean };
+export type SendResult =
+  | { ok: true; id?: string }
+  | { ok: false; error: string; skipped?: boolean; status?: number };
 
 export async function sendEmail(params: {
   to: string;
@@ -110,6 +112,11 @@ export async function sendEmail(params: {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.EMAIL_FROM ?? "gebrekan <onboarding@resend.dev>";
   if (!key) {
+    console.error(
+      "[email] RESEND_API_KEY not set — confirmation email to",
+      params.to,
+      "was skipped",
+    );
     return { ok: false, skipped: true, error: "RESEND_API_KEY not set" };
   }
   try {
@@ -129,11 +136,19 @@ export async function sendEmail(params: {
     });
     if (!res.ok) {
       const body = await res.text();
-      return { ok: false, error: `${res.status}: ${body.slice(0, 200)}` };
+      const snippet = body.slice(0, 300);
+      console.error(
+        `[email] resend ${res.status} sending to ${params.to} from "${from}": ${snippet}`,
+      );
+      return { ok: false, status: res.status, error: `${res.status}: ${snippet}` };
     }
-    return { ok: true };
+    const data = (await res.json().catch(() => ({}))) as { id?: string };
+    console.log(`[email] sent to ${params.to} (id=${data.id ?? "?"})`);
+    return { ok: true, id: data.id };
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : "fetch failed" };
+    const msg = e instanceof Error ? e.message : "fetch failed";
+    console.error(`[email] fetch failed for ${params.to}: ${msg}`);
+    return { ok: false, error: msg };
   }
 }
 
