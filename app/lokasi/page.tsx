@@ -54,7 +54,7 @@ export default function LokasiPage() {
   return (
     <PageShell
       page="lokasi"
-      title="pilih lokasi"
+      title="mau dimana"
       back={{ href: "/kapan" }}
     >
       <div className="flex flex-col gap-3">
