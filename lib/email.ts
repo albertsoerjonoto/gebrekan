@@ -22,7 +22,10 @@ type SubmissionState = {
   message: string;
 };
 
-export function formatSummary(state: SubmissionState): {
+export function formatSummary(
+  state: SubmissionState,
+  brand: "gebrekan" | "konfirmasi" = "gebrekan",
+): {
   subject: string;
   text: string;
   html: string;
@@ -45,7 +48,7 @@ export function formatSummary(state: SubmissionState): {
   const actLabel = actMeta ? `${actMeta.emoji} ${actMeta.label}` : state.activity ?? "-";
   const message = (state.message ?? "").trim();
 
-  const subject = `gebrekan: ${dayOpt?.label ?? "??"} — ${actMeta?.label ?? "??"}`;
+  const subject = `${brand}: ${dayOpt?.label ?? "??"} — ${actMeta?.label ?? "??"}`;
 
   const lines = [
     `mood     : ${beraniLabel}`,
@@ -67,7 +70,7 @@ export function formatSummary(state: SubmissionState): {
 
   const html = `<!doctype html><html><body style="font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#111;background:#fafafa;padding:24px;">
 <div style="max-width:480px;margin:0 auto;background:#fff;border:1px solid #eee;border-radius:16px;padding:20px;">
-<h2 style="margin:0 0 12px 0;color:#CE3D66;">gebrekan — kecatet ✓</h2>
+<h2 style="margin:0 0 12px 0;color:#CE3D66;">${brand === "konfirmasi" ? "konfirmasi" : "gebrekan — kecatet ✓"}</h2>
 <table style="width:100%;border-collapse:collapse;font-size:14px;">
 ${rows
   .map(
@@ -108,49 +111,33 @@ export async function sendEmail(params: {
   subject: string;
   text: string;
   html: string;
-  icsContent?: string;
+  from?: string;
 }): Promise<SendResult> {
   const key = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM ?? "gebrekan <onboarding@resend.dev>";
+  const from = params.from ?? process.env.EMAIL_FROM ?? "gebrekan <onboarding@resend.dev>";
   if (!key) {
-    console.error(
-      "[email] RESEND_API_KEY not set — confirmation email to",
-      params.to,
-      "was skipped",
-    );
+    console.error("[email] RESEND_API_KEY not set — email to", params.to, "skipped");
     return { ok: false, skipped: true, error: "RESEND_API_KEY not set" };
   }
   try {
-    const body: Record<string, unknown> = {
-      from,
-      to: params.to,
-      subject: params.subject,
-      text: params.text,
-      html: params.html,
-    };
-    if (params.icsContent) {
-      body.attachments = [
-        {
-          filename: "invite.ics",
-          content: Buffer.from(params.icsContent).toString("base64"),
-          content_type: "text/calendar; charset=utf-8; method=REQUEST",
-        },
-      ];
-    }
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${key}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        from,
+        to: params.to,
+        subject: params.subject,
+        text: params.text,
+        html: params.html,
+      }),
     });
     if (!res.ok) {
       const resBody = await res.text();
       const snippet = resBody.slice(0, 300);
-      console.error(
-        `[email] resend ${res.status} sending to ${params.to} from "${from}": ${snippet}`,
-      );
+      console.error(`[email] resend ${res.status} to ${params.to}: ${snippet}`);
       return { ok: false, status: res.status, error: `${res.status}: ${snippet}` };
     }
     const data = (await res.json().catch(() => ({}))) as { id?: string };
@@ -170,3 +157,4 @@ export function getFromEmail(): string {
 
 export const OWNER_EMAIL = "albertsoerjonoto98@gmail.com";
 export const GUEST_EMAIL = "albert.soerjonoto@gmail.com";
+export const SOPHIA_EMAIL = "sophiatick@gmail.com";
