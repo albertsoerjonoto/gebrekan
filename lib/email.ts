@@ -153,4 +153,4 @@ export async function sendEmail(params: {
 }
 
 export const OWNER_EMAIL = "albertsoerjonoto98@gmail.com";
-export const GUEST_EMAIL = "sophiatick@gmail.com";
+export const GUEST_EMAIL = "albert.soerjonoto@gmail.com";

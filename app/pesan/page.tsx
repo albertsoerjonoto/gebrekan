@@ -125,8 +125,8 @@ export default function PesanPage() {
   return (
     <PageShell
       page="pesan"
-      title="sip. udh kecatet"
-      subtitle="balik ke atas kalo mau ubah jawaban"
+      title="yeayy"
+      subtitle="see u soon"
       back={{ href: "/ngapain", label: "ubah" }}
     >
       <div className="flex flex-col gap-4">
@@ -160,19 +160,6 @@ export default function PesanPage() {
             }}
           />
         </label>
-
-        <div
-          className="flex items-center justify-center rounded-2xl px-4 py-3 text-sm"
-          style={{
-            background: status === "error" ? "#fee" : `${accent}18`,
-            color: status === "error" ? "#b00" : accent,
-          }}
-        >
-          {status === "sending" ? "ngesimpen..." : null}
-          {status === "sent" ? "✓ kesimpen — makasih ya 🥹" : null}
-          {status === "error" ? `gagal simpen: ${err ?? "coba lagi"}` : null}
-          {status === "idle" ? "siap-siap nyimpen..." : null}
-        </div>
 
         {status === "error" ? (
           <button
@@ -219,11 +206,6 @@ export default function PesanPage() {
           {guestStatus === "error" ? (
             <p className="text-sm text-red-500">
               gagal kirim ke sophia: {guestErr ?? "coba lagi"}
-            </p>
-          ) : null}
-          {guestStatus === "idle" ? (
-            <p className="text-xs opacity-60 text-center">
-              opsional — klik kalo mau forward ke sophia
             </p>
           ) : null}
         </div>
