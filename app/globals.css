@@ -76,9 +76,9 @@ body {
 
 .meerkat-wrap {
   position: fixed;
-  right: 4vw;
+  left: 4vw;
   bottom: 4vw;
-  width: clamp(72px, 16vw, 128px);
+  width: clamp(100px, 22vw, 180px);
   aspect-ratio: 1 / 1;
   pointer-events: none;
   user-select: none;
