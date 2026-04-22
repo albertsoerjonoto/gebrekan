@@ -76,9 +76,9 @@ body {
 
 .meerkat-wrap {
   position: fixed;
-  left: 4vw;
-  bottom: 4vw;
-  width: clamp(180px, 40vw, 260px);
+  left: 50%;
+  bottom: 1.5vw;
+  width: clamp(110px, 26vw, 170px);
   aspect-ratio: 1 / 1;
   pointer-events: none;
   user-select: none;
@@ -96,8 +96,8 @@ body {
 .meerkat-b { animation: meerkat-swap-b 1.1s steps(1, end) infinite; }
 
 @keyframes meerkat-float {
-  0%, 100% { transform: translateY(0) rotate(-2.5deg); }
-  50%      { transform: translateY(-10px) rotate(2.5deg); }
+  0%, 100% { transform: translateX(-50%) translateY(0) rotate(-2.5deg); }
+  50%      { transform: translateX(-50%) translateY(-10px) rotate(2.5deg); }
 }
 @keyframes meerkat-swap-a {
   0%, 49.99%   { opacity: 1; }
@@ -109,7 +109,10 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .meerkat-wrap { animation: none; }
+  .meerkat-wrap {
+    animation: none;
+    transform: translateX(-50%);
+  }
   .meerkat-a, .meerkat-b { animation: none; }
   .meerkat-b { opacity: 0; }
 }
