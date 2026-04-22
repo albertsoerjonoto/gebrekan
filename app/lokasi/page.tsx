@@ -47,6 +47,11 @@ export default function LokasiPage() {
     }
   }, [hydrated, state.berani, state.day, router]);
 
+  useEffect(() => {
+    router.prefetch("/siapa");
+    router.prefetch("/ngapain");
+  }, [router]);
+
   const options = allowedLocations(state.day);
 
   const nextHref = needsInviteesPage(state.berani) ? "/siapa" : "/ngapain";

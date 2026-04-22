@@ -25,6 +25,10 @@ export default function NgapainPage() {
     else if (needsInviteesPage(state.berani) && state.invitees.length === 0) router.replace("/siapa");
   }, [hydrated, state.berani, state.day, state.location, state.invitees.length, router]);
 
+  useEffect(() => {
+    router.prefetch("/pesan");
+  }, [router]);
+
   const options = allowedActivities({
     berani: state.berani,
     day: state.day,

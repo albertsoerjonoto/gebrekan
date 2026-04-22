@@ -16,6 +16,12 @@ export default function KapanPage() {
     if (hydrated && !state.berani) router.replace("/");
   }, [hydrated, state.berani, router]);
 
+  useEffect(() => {
+    router.prefetch("/lokasi");
+    router.prefetch("/siapa");
+    router.prefetch("/ngapain");
+  }, [router]);
+
   const title = state.berani === "udh_haha" ? "wow. kapan u free" : "gpp. kapan u free";
 
   const nextHrefFor = (day: DayKey) => {
