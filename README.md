@@ -68,6 +68,24 @@ Buka Neon console → project → SQL Editor → paste isi [`lib/db.ts`](./lib/d
 
 Klik **Deploy** di Vercel. Build selesai sekitar 1–2 menit.
 
+### shortcut: one-shot script
+
+Kalau udah punya `VERCEL_TOKEN` + `NEON_API_KEY` (set di env atau di
+`~/.claude/settings.json`):
+
+```bash
+bash scripts/deploy.sh
+```
+
+Script ini idempotent — aman di-run ulang. Dia bakal:
+1. Cari atau bikin Neon project `gebrekan` di Singapore region.
+2. Ambil `DATABASE_URL` (pooled) dari Neon.
+3. Apply schema via `npm run db:init`.
+4. Link repo ke Vercel project `gebrekan`.
+5. Set `DATABASE_URL` + `ADMIN_TOKEN` env var di Vercel (production+preview+dev).
+6. Deploy ke production.
+7. Print URL + `ADMIN_TOKEN`.
+
 ### 7. kirim ke sophia
 
 - Production URL: `https://<project>.vercel.app/`
