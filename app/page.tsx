@@ -23,7 +23,7 @@ export default function Page() {
     <div className="flex flex-1 flex-col gap-8">
       <header className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold leading-tight">
-          udh berani ketemu berdua lagi belom?
+          udh berani ketemu berdua lg?
         </h1>
       </header>
 
