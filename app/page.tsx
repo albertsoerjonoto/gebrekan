@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { BERANI_OPTIONS } from "@/lib/options";
 import { useFormState } from "@/lib/state";
+import { MeerkatDoll } from "@/lib/meerkat";
 
 const WIDTHS = ["100%", "86%", "72%", "58%", "44%"];
 
@@ -26,6 +27,8 @@ export default function Page() {
           udh berani ketemu berdua lagi belom?
         </h1>
       </header>
+
+      <MeerkatDoll scene="berani" />
 
       <section className="mt-2 flex flex-1 flex-col items-center gap-3">
         {BERANI_OPTIONS.map((opt, i) => {

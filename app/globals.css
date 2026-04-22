@@ -73,3 +73,27 @@ body {
   border-color: transparent;
 }
 .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.meerkat-doll {
+  position: relative;
+  margin: 0 auto;
+  pointer-events: none;
+  user-select: none;
+}
+.meerkat-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: meerkat-swap 1.4s steps(1) infinite;
+}
+.meerkat-frame-b { animation-delay: 0.7s; }
+@keyframes meerkat-swap {
+  0%, 49.999% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .meerkat-frame { animation: none; }
+  .meerkat-frame-b { display: none; }
+}
