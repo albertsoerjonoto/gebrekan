@@ -108,6 +108,7 @@ export async function sendEmail(params: {
   subject: string;
   text: string;
   html: string;
+  icsContent?: string;
 }): Promise<SendResult> {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.EMAIL_FROM ?? "gebrekan <onboarding@resend.dev>";
@@ -120,23 +121,33 @@ export async function sendEmail(params: {
     return { ok: false, skipped: true, error: "RESEND_API_KEY not set" };
   }
   try {
+    const body: Record<string, unknown> = {
+      from,
+      to: params.to,
+      subject: params.subject,
+      text: params.text,
+      html: params.html,
+    };
+    if (params.icsContent) {
+      body.attachments = [
+        {
+          filename: "invite.ics",
+          content: Buffer.from(params.icsContent).toString("base64"),
+          content_type: "text/calendar; charset=utf-8; method=REQUEST",
+        },
+      ];
+    }
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${key}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        from,
-        to: params.to,
-        subject: params.subject,
-        text: params.text,
-        html: params.html,
-      }),
+      body: JSON.stringify(body),
     });
     if (!res.ok) {
-      const body = await res.text();
-      const snippet = body.slice(0, 300);
+      const resBody = await res.text();
+      const snippet = resBody.slice(0, 300);
       console.error(
         `[email] resend ${res.status} sending to ${params.to} from "${from}": ${snippet}`,
       );
@@ -150,6 +161,11 @@ export async function sendEmail(params: {
     console.error(`[email] fetch failed for ${params.to}: ${msg}`);
     return { ok: false, error: msg };
   }
+}
+
+export function getFromEmail(): string {
+  const from = process.env.EMAIL_FROM ?? "gebrekan <onboarding@resend.dev>";
+  return from.match(/<(.+)>/)?.[1] ?? from;
 }
 
 export const OWNER_EMAIL = "albertsoerjonoto98@gmail.com";
