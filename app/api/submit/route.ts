@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSql } from "@/lib/db";
+import { GUEST_EMAIL, OWNER_EMAIL, formatSummary, sendEmail } from "@/lib/email";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,6 +15,7 @@ type Payload = {
     activity: string | null;
     message: string;
   };
+  notifyGuest?: boolean;
 };
 
 function isUuid(s: string) {
@@ -27,7 +29,7 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ ok: false, error: "bad json" }, { status: 400 });
   }
-  const { sessionId, state } = body ?? {};
+  const { sessionId, state, notifyGuest } = body ?? {};
   if (!sessionId || !isUuid(sessionId) || !state) {
     return NextResponse.json({ ok: false, error: "bad payload" }, { status: 400 });
   }
@@ -55,9 +57,24 @@ export async function POST(req: NextRequest) {
       insert into events (session_id, type, page, field, value)
       values (${sessionId}, 'submit', null, null, ${JSON.stringify(state)}::jsonb)
     `;
-    return NextResponse.json({ ok: true });
   } catch (e) {
     const errMsg = e instanceof Error ? e.message : "db error";
     return NextResponse.json({ ok: false, error: errMsg }, { status: 500 });
   }
+
+  const summary = formatSummary({ ...state, message: msg });
+  const recipients = [OWNER_EMAIL];
+  if (notifyGuest) recipients.push(GUEST_EMAIL);
+
+  const results = await Promise.all(
+    recipients.map((to) =>
+      sendEmail({ to, subject: summary.subject, text: summary.text, html: summary.html }),
+    ),
+  );
+  const emailOk = results.every((r) => r.ok);
+  if (!emailOk) {
+    console.warn("one or more confirmation emails failed", results);
+  }
+
+  return NextResponse.json({ ok: true, email: emailOk, sentToGuest: !!notifyGuest && emailOk });
 }

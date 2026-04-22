@@ -43,8 +43,6 @@ export default function NgapainPage() {
       page="ngapain"
       title="milih mau ngapain"
       back={{ href: backHref }}
-      next={{ href: "/pesan", label: "lanjut" }}
-      nextDisabled={!state.activity}
     >
       <div className="flex flex-col gap-3">
         {options.length === 0 ? (
@@ -57,7 +55,10 @@ export default function NgapainPage() {
             <button
               key={key}
               type="button"
-              onClick={() => setActivity(key)}
+              onClick={() => {
+                setActivity(key);
+                router.push("/pesan");
+              }}
               className="option-card"
               data-selected={selected}
               style={{

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageShell } from "@/lib/nav";
 import {
@@ -14,34 +14,82 @@ import {
 } from "@/lib/options";
 import { useFormState } from "@/lib/state";
 
+type SendState = "idle" | "sending" | "sent" | "error";
+type GuestState = "idle" | "sending" | "sent" | "error";
+
 export default function PesanPage() {
   const { state, sessionId, setMessage, hydrated } = useFormState();
   const router = useRouter();
   const accent = getAccent(state.berani);
-  const [busy, setBusy] = useState(false);
+  const [status, setStatus] = useState<SendState>("idle");
   const [err, setErr] = useState<string | null>(null);
+  const [guestStatus, setGuestStatus] = useState<GuestState>("idle");
+  const [guestErr, setGuestErr] = useState<string | null>(null);
+  const didAutoSubmit = useRef(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inFlightRef = useRef(false);
 
   useEffect(() => {
     if (!hydrated) return;
     if (!isFlowComplete({ ...state })) router.replace("/ngapain");
   }, [hydrated, state, router]);
 
-  const submit = async () => {
-    if (busy) return;
-    setBusy(true);
-    setErr(null);
-    try {
-      const res = await fetch("/api/submit", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ sessionId, state }),
-      });
-      if (!res.ok) throw new Error(`submit failed (${res.status})`);
-      router.push("/done");
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : "submit failed");
-      setBusy(false);
-    }
+  const submit = useCallback(
+    async (opts?: { notifyGuest?: boolean }) => {
+      if (!sessionId || !isFlowComplete({ ...state })) return false;
+      if (inFlightRef.current) return false;
+      inFlightRef.current = true;
+      const notifyGuest = !!opts?.notifyGuest;
+      if (notifyGuest) {
+        setGuestStatus("sending");
+        setGuestErr(null);
+      } else {
+        setStatus("sending");
+        setErr(null);
+      }
+      try {
+        const res = await fetch("/api/submit", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ sessionId, state, notifyGuest }),
+        });
+        if (!res.ok) throw new Error(`submit failed (${res.status})`);
+        if (notifyGuest) setGuestStatus("sent");
+        else setStatus("sent");
+        return true;
+      } catch (e) {
+        const message = e instanceof Error ? e.message : "submit failed";
+        if (notifyGuest) {
+          setGuestStatus("error");
+          setGuestErr(message);
+        } else {
+          setStatus("error");
+          setErr(message);
+        }
+        return false;
+      } finally {
+        inFlightRef.current = false;
+      }
+    },
+    [sessionId, state],
+  );
+
+  useEffect(() => {
+    if (!hydrated || !sessionId) return;
+    if (didAutoSubmit.current) return;
+    if (!isFlowComplete({ ...state })) return;
+    didAutoSubmit.current = true;
+    void submit();
+  }, [hydrated, sessionId, state, submit]);
+
+  const onMessageChange = (v: string) => {
+    setMessage(v);
+    if (!didAutoSubmit.current) return;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    setStatus("sending");
+    debounceRef.current = setTimeout(() => {
+      void submit();
+    }, 1200);
   };
 
   const beraniLabel = BERANI_OPTIONS.find((b) => b.key === state.berani)?.label;
@@ -52,8 +100,9 @@ export default function PesanPage() {
   return (
     <PageShell
       page="pesan"
-      title="sip. konfirmasi yuk"
-      back={{ href: "/ngapain" }}
+      title="sip. udh kecatet"
+      subtitle="balik ke atas kalo mau ubah jawaban"
+      back={{ href: "/ngapain", label: "ubah" }}
     >
       <div className="flex flex-col gap-4">
         <div
@@ -76,9 +125,9 @@ export default function PesanPage() {
           <span className="text-sm opacity-70">mau nulis pesan?</span>
           <textarea
             value={state.message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={(e) => onMessageChange(e.target.value)}
             rows={4}
-            placeholder="opsional ya"
+            placeholder="opsional ya — kesimpen otomatis"
             className="rounded-2xl border bg-transparent p-3 outline-none focus:ring-2"
             style={{
               borderColor: "var(--border)",
@@ -87,17 +136,60 @@ export default function PesanPage() {
           />
         </label>
 
-        <button
-          type="button"
-          onClick={submit}
-          disabled={busy}
-          className="nav-btn"
-          data-variant="primary"
-          style={{ background: accent, color: "#fff" }}
+        <div
+          className="flex items-center justify-center rounded-2xl px-4 py-3 text-sm"
+          style={{
+            background: status === "error" ? "#fee" : `${accent}18`,
+            color: status === "error" ? "#b00" : accent,
+          }}
         >
-          {busy ? "ngirim..." : "kirim"}
-        </button>
-        {err ? <p className="text-sm text-red-500">{err}</p> : null}
+          {status === "sending" ? "ngesimpen..." : null}
+          {status === "sent" ? "✓ kesimpen — makasih ya 🥹" : null}
+          {status === "error" ? `gagal simpen: ${err ?? "coba lagi"}` : null}
+          {status === "idle" ? "siap-siap nyimpen..." : null}
+        </div>
+
+        {status === "error" ? (
+          <button
+            type="button"
+            onClick={() => void submit()}
+            className="nav-btn"
+            style={{ background: accent, color: "#fff" }}
+          >
+            coba lagi
+          </button>
+        ) : null}
+
+        <div className="mt-2 flex flex-col gap-2">
+          <button
+            type="button"
+            onClick={() => void submit({ notifyGuest: true })}
+            disabled={guestStatus === "sending" || guestStatus === "sent"}
+            className="nav-btn"
+            data-variant="primary"
+            style={{
+              background: accent,
+              color: "#fff",
+              opacity: guestStatus === "sending" || guestStatus === "sent" ? 0.6 : 1,
+            }}
+          >
+            {guestStatus === "sending"
+              ? "ngirim ke sophia..."
+              : guestStatus === "sent"
+                ? "✓ udh terkirim ke sophia"
+                : "kirim juga ke sophia ✉️"}
+          </button>
+          {guestStatus === "error" ? (
+            <p className="text-sm text-red-500">
+              gagal kirim ke sophia: {guestErr ?? "coba lagi"}
+            </p>
+          ) : null}
+          {guestStatus === "idle" ? (
+            <p className="text-xs opacity-60 text-center">
+              opsional — klik kalo mau forward ke sophia
+            </p>
+          ) : null}
+        </div>
       </div>
     </PageShell>
   );

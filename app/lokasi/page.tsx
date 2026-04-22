@@ -56,8 +56,6 @@ export default function LokasiPage() {
       page="lokasi"
       title="pilih lokasi"
       back={{ href: "/kapan" }}
-      next={{ href: nextHref }}
-      nextDisabled={!state.location}
     >
       <div className="flex flex-col gap-3">
         {options.map((key) => {
@@ -68,7 +66,10 @@ export default function LokasiPage() {
             <button
               key={key}
               type="button"
-              onClick={() => setLocation(key)}
+              onClick={() => {
+                setLocation(key);
+                router.push(nextHref);
+              }}
               className="option-card"
               data-selected={selected}
               style={{
