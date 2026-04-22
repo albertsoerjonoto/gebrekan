@@ -93,6 +93,7 @@ export type ActivityKey =
   | "le_quartier"
   | "txoko_senop"
   | "manzo"
+  | "sophilia"
   | "babylon_garden";
 
 export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string; note?: string }> = {
@@ -116,6 +117,7 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   le_quartier: { label: "le quartier", emoji: "🥩" },
   txoko_senop: { label: "txoko", emoji: "🥘" },
   manzo: { label: "manzo", emoji: "🎷" },
+  sophilia: { label: "sophilia", emoji: "🖼️" },
   babylon_garden: { label: "babylon", emoji: "🥂" },
 };
 
@@ -195,7 +197,11 @@ export function allowedActivities(opts: {
       acts.push("babylon_garden");
       return acts;
     }
-    if (effLoc === "jakarta") return ["faunaland", "jetski", "karting", "skorz"];
+    if (effLoc === "jakarta") {
+      const acts: ActivityKey[] = ["faunaland", "jetski", "karting", "skorz"];
+      if (day === "minggu_ini") acts.push("sophilia");
+      return acts;
+    }
     if (effLoc === "karawaci") {
       return ["karting", "timezone_karawaci", "bouncestreet", "masak_rumah", "nyapu_pel", "jalan_mall"];
     }
@@ -221,7 +227,9 @@ export function allowedActivities(opts: {
     return ["karting", "bouncestreet", "padel", "masak_rumah", "nyapu_pel", "jalan_mall"];
   }
   if (effLoc === "jakarta") {
-    return ["faunaland", "jetski", "karting", "skorz"];
+    const acts: ActivityKey[] = ["faunaland", "jetski", "karting", "skorz"];
+    if (day === "minggu_ini") acts.push("sophilia");
+    return acts;
   }
   return [];
 }
