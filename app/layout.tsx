@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { StateProvider } from "@/lib/state";
+import { MeerkatDoll } from "@/lib/meerkat";
 
 export const metadata: Metadata = {
   title: "gebrekan",
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 py-8">
             {children}
           </main>
+          <MeerkatDoll />
         </StateProvider>
       </body>
     </html>
