@@ -85,9 +85,6 @@ export default function LokasiPage() {
                 <span className="text-2xl">{meta.emoji}</span>
                 <span>{meta.label}</span>
               </span>
-              {key === "bekasi" ? (
-                <span className="text-xs opacity-80">❄️ winter vibes</span>
-              ) : null}
             </button>
           );
         })}

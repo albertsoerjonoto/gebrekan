@@ -54,10 +54,6 @@ export default function Page() {
         })}
       </section>
 
-      <footer className="flex items-center justify-between gap-3">
-        <span />
-        <span className="text-xs opacity-60">pilih satu untuk lanjut →</span>
-      </footer>
     </div>
   );
 }
