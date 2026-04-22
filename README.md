@@ -2,6 +2,10 @@
 
 undangan. next.js + neon postgres + vercel.
 
+## live
+
+https://gebrekan.vercel.app
+
 ## flow
 
 1. `/` — *udh berani ketemu berdua lagi belom?* (reverse pyramid, 5 pilihan, bossy pink → french blue)

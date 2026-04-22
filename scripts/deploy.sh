@@ -40,23 +40,52 @@ if [[ ! -d node_modules ]]; then
   npm install --no-audit --no-fund --loglevel=error
 fi
 
-VERCEL="npx --yes vercel --token $VERCEL_TOKEN"
+VERCEL_BASE="npx --yes vercel --token $VERCEL_TOKEN"
 NEON="npx --yes neonctl --api-key $NEON_API_KEY --output json"
+
+# ---------- vercel: resolve scope (non-interactive when account has teams) ----------
+if [[ -z "$VERCEL_SCOPE" ]]; then
+  # teams list emits a plain-text table to stderr; redirect 2>&1 so node sees it.
+  VERCEL_SCOPE="$($VERCEL_BASE teams list 2>&1 | node -e "
+    let d=''; process.stdin.on('data',c=>d+=c).on('end',()=>{
+      const lines=d.split('\n').map(l=>l.trim()).filter(Boolean);
+      const headerIdx=lines.findIndex(l=>/^id\s/i.test(l));
+      if(headerIdx>=0 && lines[headerIdx+1]) console.log(lines[headerIdx+1].split(/\s+/)[0]);
+    })" || true)"
+fi
+VERCEL="$VERCEL_BASE"
+[[ -n "$VERCEL_SCOPE" ]] && VERCEL="$VERCEL_BASE --scope $VERCEL_SCOPE" && echo "  using Vercel scope: $VERCEL_SCOPE"
+
+# ---------- neon: resolve org (non-interactive when account has orgs) ----------
+if [[ -z "${NEON_ORG_ID:-}" ]]; then
+  NEON_ORG_ID="$($NEON orgs list 2>/dev/null | node -e "
+    let d=''; process.stdin.on('data',c=>d+=c).on('end',()=>{
+      try { const rows=JSON.parse(d); if(Array.isArray(rows) && rows.length===1) console.log(rows[0].id); }
+      catch {}
+    })" || true)"
+fi
+NEON_ORG_FLAG=""
+[[ -n "$NEON_ORG_ID" ]] && NEON_ORG_FLAG="--org-id $NEON_ORG_ID"
+[[ -n "$NEON_ORG_ID" ]] && echo "  using Neon org: $NEON_ORG_ID"
 
 # ---------- neon: find or create project ----------
 echo "→ finding or creating Neon project '$PROJECT_SLUG'"
-NEON_PROJECT_ID="$($NEON projects list 2>/dev/null | node -e "
+NEON_PROJECT_ID="$($NEON projects list $NEON_ORG_FLAG 2>/dev/null | node -e "
   let d=''; process.stdin.on('data',c=>d+=c).on('end',()=>{
-    const rows=JSON.parse(d).projects || [];
-    const hit=rows.find(p=>p.name==='$PROJECT_SLUG');
-    if(hit) console.log(hit.id);
+    try {
+      const parsed=JSON.parse(d);
+      const rows=Array.isArray(parsed) ? parsed : (parsed.projects || []);
+      const hit=rows.find(p=>p.name==='$PROJECT_SLUG');
+      if(hit) console.log(hit.id);
+    } catch {}
   })" || true)"
 
 if [[ -z "$NEON_PROJECT_ID" ]]; then
   echo "  creating new Neon project in $NEON_REGION"
-  NEON_PROJECT_ID="$($NEON projects create --name "$PROJECT_SLUG" --region-id "$NEON_REGION" | node -e "
+  NEON_PROJECT_ID="$($NEON projects create --name "$PROJECT_SLUG" --region-id "$NEON_REGION" $NEON_ORG_FLAG | node -e "
     let d=''; process.stdin.on('data',c=>d+=c).on('end',()=>{
-      console.log(JSON.parse(d).project.id);
+      const o=JSON.parse(d);
+      console.log((o.project && o.project.id) || o.id);
     })")"
 fi
 echo "  Neon project id: $NEON_PROJECT_ID"
@@ -79,20 +108,23 @@ DATABASE_URL="$DATABASE_URL" npx --yes tsx scripts/init-db.ts
 
 # ---------- vercel: link or create project ----------
 echo "→ linking Vercel project '$PROJECT_SLUG'"
-if [[ -n "$VERCEL_SCOPE" ]]; then
-  $VERCEL link --yes --project "$PROJECT_SLUG" --scope "$VERCEL_SCOPE" || true
-else
-  $VERCEL link --yes --project "$PROJECT_SLUG" || true
-fi
+$VERCEL link --yes --project "$PROJECT_SLUG" || true
 
 # ---------- vercel: set env vars (overwrite any existing) ----------
+GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
+
 set_env() {
   local key="$1" val="$2"
-  for env in production preview development; do
+  # production + development accept --value/--yes directly; preview needs a git branch.
+  for env in production development; do
     $VERCEL env rm "$key" "$env" --yes >/dev/null 2>&1 || true
-    printf '%s' "$val" | $VERCEL env add "$key" "$env" >/dev/null
+    $VERCEL env add "$key" "$env" --value "$val" --yes >/dev/null 2>&1
   done
-  echo "  set $key for production/preview/development"
+  if [[ -n "$GIT_BRANCH" && "$GIT_BRANCH" != "HEAD" ]]; then
+    $VERCEL env rm "$key" preview "$GIT_BRANCH" --yes >/dev/null 2>&1 || true
+    $VERCEL env add "$key" preview "$GIT_BRANCH" --value "$val" --yes >/dev/null 2>&1 || true
+  fi
+  echo "  set $key for production/development${GIT_BRANCH:+/preview@$GIT_BRANCH}"
 }
 
 echo "→ setting env vars"
@@ -101,10 +133,20 @@ set_env ADMIN_TOKEN  "$ADMIN_TOKEN"
 
 # ---------- deploy ----------
 echo "→ deploying to production"
-DEPLOY_URL="$($VERCEL deploy --prod --yes | tail -n1)"
+DEPLOY_LOG="$($VERCEL deploy --prod --yes 2>&1)"
+echo "$DEPLOY_LOG"
+# Prefer the aliased (stable) URL; fall back to the deployment URL.
+DEPLOY_URL="$(printf '%s\n' "$DEPLOY_LOG" | node -e "
+  let d=''; process.stdin.on('data',c=>d+=c).on('end',()=>{
+    const lines=d.split('\n');
+    const alias=lines.map(l=>l.match(/Aliased:\s*(https:\/\/\S+)/)).find(Boolean);
+    const prod=lines.map(l=>l.match(/Production:\s*(https:\/\/\S+)/)).find(Boolean);
+    const pick=(alias||prod);
+    if(pick) console.log(pick[1]);
+  })")"
 
 echo
 echo "✓ done"
 echo "  app:   $DEPLOY_URL"
-echo "  inbox: $DEPLOY_URL/inbox"
+echo "  inbox: $DEPLOY_URL/inbox?token=$ADMIN_TOKEN"
 echo "  ADMIN_TOKEN: $ADMIN_TOKEN"
