@@ -31,8 +31,8 @@ export default function SiapaPage() {
   return (
     <PageShell
       page="siapa"
-      title="ajak siapa aja"
-      subtitle="bisa pilih lebih dari satu"
+      title="mau ajak siapa"
+      subtitle="bisa banyak woi"
       back={{ href: backHref }}
       next={{ href: "/ngapain" }}
       nextDisabled={state.invitees.length === 0}
