@@ -15,12 +15,14 @@ import {
 import { useFormState } from "@/lib/state";
 
 type SendState = "idle" | "sending" | "sent" | "error";
+type SophiaState = "idle" | "sending" | "sent";
 
 export default function PesanPage() {
   const { state, sessionId, hydrated } = useFormState();
   const router = useRouter();
   const accent = getAccent(state.berani);
   const [status, setStatus] = useState<SendState>("idle");
+  const [sophiaState, setSophiaState] = useState<SophiaState>("idle");
   const didAutoSubmit = useRef(false);
   const inFlightRef = useRef(false);
 
@@ -59,6 +61,21 @@ export default function PesanPage() {
     didAutoSubmit.current = true;
     void submit();
   }, [hydrated, sessionId, state, submit]);
+
+  const sendToSophia = useCallback(async () => {
+    if (sophiaState !== "idle") return;
+    setSophiaState("sending");
+    try {
+      await fetch("/api/konfirmasi", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ state }),
+      });
+    } catch {
+      // silent
+    }
+    setSophiaState("sent");
+  }, [sophiaState, state]);
 
   const beraniLabel = BERANI_OPTIONS.find((b) => b.key === state.berani)?.label;
   const dayOpt = DAY_OPTIONS.find((d) => d.key === state.day);
@@ -101,6 +118,16 @@ export default function PesanPage() {
             coba lagi
           </button>
         ) : null}
+
+        <button
+          type="button"
+          onClick={() => void sendToSophia()}
+          disabled={sophiaState !== "idle"}
+          className="nav-btn"
+          style={{ background: accent, color: "#fff", opacity: sophiaState !== "idle" ? 0.6 : 1 }}
+        >
+          {sophiaState === "sending" ? "mengirim..." : sophiaState === "sent" ? "terkirim ✓" : "kirim ke email ✉️"}
+        </button>
 
       </div>
     </PageShell>
