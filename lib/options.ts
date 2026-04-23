@@ -227,10 +227,11 @@ export function allowedActivities(opts: {
     const hasTantePona = invitees.includes("tante_pona");
     const hasOmDom = invitees.includes("om_dom");
     const base: ActivityKey[] = ["karting", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
-    if (hasTantePona || hasOmDom) {
-      return base.filter((a) => a !== "karting" && a !== "bouncestreet");
-    }
-    return base;
+    return base.filter((a) => {
+      if (a === "karting" || a === "bouncestreet") return !(hasTantePona || hasOmDom);
+      if (a === "nyapu_pel") return hasTantePona && hasOmDom;
+      return true;
+    });
   }
   if (effLoc === "jakarta") {
     const acts: ActivityKey[] = ["faunaland", "jetski", "karting", "skorz"];
