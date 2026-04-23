@@ -211,13 +211,15 @@ export function allowedActivities(opts: {
     const hasAndreaOrChristine = invitees.some((i) =>
       (["deedee_foodie", "weirdoalien"] as InviteeKey[]).includes(i),
     );
+    const hasBoth = hasGoltox && hasAndreaOrChristine;
     const out: ActivityKey[] = [];
     if (hasGoltox) out.push("little_frenchie");
     if (hasAndreaOrChristine) out.push("bouchon");
     if (hasGoltox) out.push("juliette");
-    if (hasAndreaOrChristine) out.push("mata_karanjang", "suara_restaurant");
+    if (hasAndreaOrChristine) out.push("mata_karanjang");
+    if (hasAndreaOrChristine && !hasBoth) out.push("suara_restaurant");
     if (day === "jumat_ini") out.push("manzo");
-    out.push("singapolah");
+    if (!hasBoth) out.push("singapolah");
     return out;
   }
 
