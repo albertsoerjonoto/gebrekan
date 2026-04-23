@@ -73,7 +73,8 @@ export const INVITEE_LABELS: Record<InviteeKey, { label: string; emoji: string }
 };
 
 export type ActivityKey =
-  | "karting"
+  | "karting_jakarta"
+  | "karting_karawaci"
   | "bouncestreet"
   | "masak_rumah"
   | "nyapu_pel"
@@ -95,25 +96,26 @@ export type ActivityKey =
   | "singapolah";
 
 export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string; note?: string; mapsUrl?: string }> = {
-  karting: { label: "karting", emoji: "🏎️" },
-  bouncestreet: { label: "bouncestreet asia", emoji: "🤸‍♂️" },
+  karting_jakarta: { label: "karting", emoji: "🏎️", mapsUrl: "https://www.google.com/maps/search/Speedy+Karting+Plaza+Semanggi+Jakarta" },
+  karting_karawaci: { label: "karting", emoji: "🏎️", mapsUrl: "https://www.google.com/maps/search/Playtopia+Sports+Supermal+Karawaci" },
+  bouncestreet: { label: "bouncestreet asia", emoji: "🤸‍♂️", mapsUrl: "https://www.google.com/maps/search/BounceStreet+Asia+Bintaro" },
   masak_rumah: { label: "masak di rumah", emoji: "🍳" },
   nyapu_pel: { label: "nyapu pel rumah", emoji: "🧹" },
-  jalan_mall: { label: "jalan2 ke mall", emoji: "🏬" },
-  timezone_karawaci: { label: "timezone karawaci", emoji: "🎢" },
-  faunaland: { label: "faunaland", emoji: "🐘" },
-  jetski: { label: "jetski", emoji: "🚤" },
-  skorz: { label: "skorz", emoji: "🔫" },
+  jalan_mall: { label: "jalan2 ke mall", emoji: "🏬", mapsUrl: "https://www.google.com/maps/place/Supermal+Karawaci/@-6.226959,106.6050183,17z/data=!3m1!4b1!4m5!3m4!1s0x2e69fc1fa03eb34d:0xf630dc3815cc7464!8m2!3d-6.226959!4d106.607207" },
+  timezone_karawaci: { label: "timezone karawaci", emoji: "🎢", mapsUrl: "https://www.google.com/maps/search/Timezone+Supermal+Karawaci" },
+  faunaland: { label: "faunaland", emoji: "🐘", mapsUrl: "https://www.google.com/maps/search/Faunaland+Ancol+Ecopark+Jakarta" },
+  jetski: { label: "jetski", emoji: "🚤", mapsUrl: "https://www.google.com/maps/search/Seadoo+Safari+Jakarta+Marina+Ancol" },
+  skorz: { label: "skorz", emoji: "🔫", mapsUrl: "https://www.google.com/maps/search/SKORZ+Sportainment+fX+Sudirman+Jakarta" },
   little_frenchie: { label: "little frenchie", emoji: "🇫🇷", mapsUrl: "https://www.google.com/maps/search/Little+Frenchie+Jl+Taman+MPU+Sendok+9+Kebayoran+Baru+Jakarta" },
   bouchon: { label: "bouchon", emoji: "🥖", mapsUrl: "https://www.google.com/maps/search/Bouchon+Jakarta+Jl+Senopati+No+79+Selong+Kebayoran+Baru" },
   juliette: { label: "juliette", emoji: "🍝", mapsUrl: "https://www.google.com/maps/search/Juliette+the+Kitchen+Menara+Astra+Sudirman+Jakarta" },
   mata_karanjang: { label: "mata karanjang", emoji: "👀", mapsUrl: "https://www.google.com/maps/search/Mata+Karanjang+Jl+Wijaya+VI+No+14A+Melawai+Kebayoran+Baru+Jakarta" },
-  trans_snow: { label: "trans snow studio bekasi", emoji: "⛷️", note: "with michael and friends" },
+  trans_snow: { label: "trans snow studio bekasi", emoji: "⛷️", note: "with michael and friends", mapsUrl: "https://www.google.com/maps/search/Trans+Snow+World+Juanda+Bekasi" },
   pizza_4p: { label: "pizza 4p", emoji: "🧀", mapsUrl: "https://maps.app.goo.gl/B4KZUYt1u4Y9ND477" },
   isabella_steakhouse: { label: "isabella", emoji: "🥩", mapsUrl: "https://www.google.com/maps/search/Isabella+Steakhouse+Jl+Wolter+Monginsidi+67A+Kebayoran+Baru+Jakarta" },
   suara_restaurant: { label: "suara", emoji: "🐔", mapsUrl: "https://maps.app.goo.gl/u739AspVNgj9yfhz8" },
   manzo: { label: "manzo", emoji: "🎷", mapsUrl: "https://www.google.com/maps/search/Manzo+Jakarta+Jl+Wijaya+II+No+28+Melawai+Kebayoran+Baru" },
-  sophilia: { label: "sophilia", emoji: "🖼️" },
+  sophilia: { label: "sophilia", emoji: "🖼️", mapsUrl: "https://maps.app.goo.gl/wtta4hQ39o19GvjH6" },
   singapolah: { label: "singapolah", emoji: "🤪", mapsUrl: "https://www.google.com/maps/search/Singapolah+SCBD+Jl+Jenderal+Sudirman+Kav+58+Jakarta+Selatan" },
 };
 
@@ -196,12 +198,12 @@ export function allowedActivities(opts: {
       return acts;
     }
     if (effLoc === "jakarta") {
-      const acts: ActivityKey[] = ["faunaland", "jetski", "karting", "skorz"];
+      const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
       if (day === "minggu_ini") acts.push("sophilia");
       return acts;
     }
     if (effLoc === "karawaci") {
-      return ["karting", "timezone_karawaci", "bouncestreet", "masak_rumah", "nyapu_pel", "jalan_mall"];
+      return ["karting_karawaci", "timezone_karawaci", "bouncestreet", "masak_rumah", "nyapu_pel", "jalan_mall"];
     }
     return [];
   }
@@ -226,15 +228,15 @@ export function allowedActivities(opts: {
   if (effLoc === "karawaci") {
     const hasTantePona = invitees.includes("tante_pona");
     const hasOmDom = invitees.includes("om_dom");
-    const base: ActivityKey[] = ["karting", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
+    const base: ActivityKey[] = ["karting_karawaci", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
     return base.filter((a) => {
-      if (a === "karting" || a === "bouncestreet") return !(hasTantePona || hasOmDom);
+      if (a === "karting_karawaci" || a === "bouncestreet") return !(hasTantePona || hasOmDom);
       if (a === "nyapu_pel") return hasTantePona && hasOmDom;
       return true;
     });
   }
   if (effLoc === "jakarta") {
-    const acts: ActivityKey[] = ["faunaland", "jetski", "karting", "skorz"];
+    const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
     if (day === "minggu_ini") acts.push("sophilia");
     return acts;
   }
