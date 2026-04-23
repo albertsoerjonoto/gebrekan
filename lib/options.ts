@@ -94,7 +94,7 @@ export type ActivityKey =
   | "sophilia"
   | "singapolah";
 
-export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string; note?: string }> = {
+export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string; note?: string; mapsUrl?: string }> = {
   karting: { label: "karting", emoji: "🏎️" },
   bouncestreet: { label: "bouncestreet asia", emoji: "🤸‍♂️" },
   masak_rumah: { label: "masak di rumah", emoji: "🍳" },
@@ -104,17 +104,17 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   faunaland: { label: "faunaland", emoji: "🐘" },
   jetski: { label: "jetski", emoji: "🚤" },
   skorz: { label: "skorz", emoji: "🔫" },
-  little_frenchie: { label: "little frenchie", emoji: "🇫🇷" },
-  bouchon: { label: "bouchon", emoji: "🥖" },
-  juliette: { label: "juliette", emoji: "🍝" },
-  mata_karanjang: { label: "mata karanjang", emoji: "👀" },
+  little_frenchie: { label: "little frenchie", emoji: "🇫🇷", mapsUrl: "https://www.google.com/maps/search/Little+Frenchie+Jl+Taman+MPU+Sendok+9+Kebayoran+Baru+Jakarta" },
+  bouchon: { label: "bouchon", emoji: "🥖", mapsUrl: "https://www.google.com/maps/search/Bouchon+Jakarta+Jl+Senopati+No+79+Selong+Kebayoran+Baru" },
+  juliette: { label: "juliette", emoji: "🍝", mapsUrl: "https://www.google.com/maps/search/Juliette+the+Kitchen+Menara+Astra+Sudirman+Jakarta" },
+  mata_karanjang: { label: "mata karanjang", emoji: "👀", mapsUrl: "https://www.google.com/maps/search/Mata+Karanjang+Jl+Wijaya+VI+No+14A+Melawai+Kebayoran+Baru+Jakarta" },
   trans_snow: { label: "trans snow studio bekasi", emoji: "⛷️", note: "with michael and friends" },
-  pizza_4p: { label: "pizza 4p", emoji: "🧀" },
-  isabella_steakhouse: { label: "isabella", emoji: "🥩" },
-  suara_restaurant: { label: "suara", emoji: "🐔" },
-  manzo: { label: "manzo", emoji: "🎷" },
+  pizza_4p: { label: "pizza 4p", emoji: "🧀", mapsUrl: "https://maps.app.goo.gl/B4KZUYt1u4Y9ND477" },
+  isabella_steakhouse: { label: "isabella", emoji: "🥩", mapsUrl: "https://www.google.com/maps/search/Isabella+Steakhouse+Jl+Wolter+Monginsidi+67A+Kebayoran+Baru+Jakarta" },
+  suara_restaurant: { label: "suara", emoji: "🐔", mapsUrl: "https://maps.app.goo.gl/u739AspVNgj9yfhz8" },
+  manzo: { label: "manzo", emoji: "🎷", mapsUrl: "https://www.google.com/maps/search/Manzo+Jakarta+Jl+Wijaya+II+No+28+Melawai+Kebayoran+Baru" },
   sophilia: { label: "sophilia", emoji: "🖼️" },
-  singapolah: { label: "singapolah", emoji: "🤪" },
+  singapolah: { label: "singapolah", emoji: "🤪", mapsUrl: "https://www.google.com/maps/search/Singapolah+SCBD+Jl+Jenderal+Sudirman+Kav+58+Jakarta+Selatan" },
 };
 
 export function isWeekend(day: DayKey | null | undefined): boolean {

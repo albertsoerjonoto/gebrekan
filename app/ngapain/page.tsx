@@ -78,6 +78,15 @@ export default function NgapainPage() {
               <span className="flex items-center gap-3">
                 <span className="text-2xl">{meta.emoji}</span>
                 <span>{meta.label}</span>
+                {meta.mapsUrl ? (
+                  <a
+                    href={meta.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-sm opacity-40 hover:opacity-80"
+                  >📍</a>
+                ) : null}
               </span>
               {meta.note ? (
                 <span className="pl-10 text-xs opacity-70">{meta.note}</span>
