@@ -115,7 +115,7 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   trans_snow: { label: "trans snow studio bekasi", emoji: "⛷️", note: "with michael and friends" },
   pizza_4p: { label: "pizza 4p", emoji: "🧀" },
   le_quartier: { label: "le quartier", emoji: "🥩" },
-  txoko_senop: { label: "txoko", emoji: "🥘" },
+  txoko_senop: { label: "suara", emoji: "🐔" },
   manzo: { label: "manzo", emoji: "🎷" },
   sophilia: { label: "sophilia", emoji: "🖼️" },
   singapolah: { label: "singapolah", emoji: "🤪" },
