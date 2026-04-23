@@ -75,7 +75,6 @@ export const INVITEE_LABELS: Record<InviteeKey, { label: string; emoji: string }
 export type ActivityKey =
   | "karting"
   | "bouncestreet"
-  | "padel"
   | "masak_rumah"
   | "nyapu_pel"
   | "jalan_mall"
@@ -99,7 +98,6 @@ export type ActivityKey =
 export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string; note?: string }> = {
   karting: { label: "karting", emoji: "🏎️" },
   bouncestreet: { label: "bouncestreet asia", emoji: "🤸‍♂️" },
-  padel: { label: "padel lucu", emoji: "🏓" },
   masak_rumah: { label: "masak di rumah", emoji: "🍳" },
   nyapu_pel: { label: "nyapu pel rumah", emoji: "🧹" },
   jalan_mall: { label: "jalan2 ke mall", emoji: "🏬" },
@@ -226,7 +224,7 @@ export function allowedActivities(opts: {
   }
 
   if (effLoc === "karawaci") {
-    return ["karting", "bouncestreet", "padel", "masak_rumah", "nyapu_pel", "jalan_mall"];
+    return ["karting", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
   }
   if (effLoc === "jakarta") {
     const acts: ActivityKey[] = ["faunaland", "jetski", "karting", "skorz"];
