@@ -107,7 +107,7 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   skorz: { label: "skorz", emoji: "🔫" },
   little_frenchie: { label: "little frenchie", emoji: "🇫🇷" },
   bouchon: { label: "bouchon", emoji: "🥖" },
-  pbtp: { label: "PBTP urban trattoria", emoji: "🍝" },
+  pbtp: { label: "juliette the kitchen", emoji: "🍝" },
   mata_karanjang: { label: "mata karanjang", emoji: "👀" },
   amanaia_satrio: { label: "amanaia satrio", emoji: "🍲" },
   trans_snow: { label: "trans snow studio bekasi", emoji: "⛷️", note: "with michael and friends" },
