@@ -231,7 +231,7 @@ export function allowedActivities(opts: {
     const base: ActivityKey[] = ["karting_karawaci", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
     return base.filter((a) => {
       if (a === "karting_karawaci") return !(hasTantePona || hasOmDom);
-      if (a === "nyapu_pel") return hasTantePona && hasOmDom;
+      if (a === "nyapu_pel") return hasTantePona || hasOmDom;
       return true;
     });
   }
