@@ -111,7 +111,7 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   trans_snow: { label: "trans snow studio bekasi", emoji: "⛷️", note: "with michael and friends" },
   pizza_4p: { label: "pizza 4p", emoji: "🧀" },
   isabella_steakhouse: { label: "isabella steakhouse", emoji: "🥩" },
-  suara_restaurant: { label: "suara", emoji: "🐔" },
+  suara_restaurant: { label: "suara restaurant", emoji: "🐔" },
   manzo: { label: "manzo", emoji: "🎷" },
   sophilia: { label: "sophilia", emoji: "🖼️" },
   singapolah: { label: "singapolah", emoji: "🤪" },
