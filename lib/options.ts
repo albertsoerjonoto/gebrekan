@@ -88,7 +88,7 @@ export type ActivityKey =
   | "mata_karanjang"
   | "trans_snow"
   | "pizza_4p"
-  | "le_quartier"
+  | "isabella_steakhouse"
   | "suara_restaurant"
   | "manzo"
   | "sophilia"
@@ -110,7 +110,7 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   mata_karanjang: { label: "mata karanjang", emoji: "👀" },
   trans_snow: { label: "trans snow studio bekasi", emoji: "⛷️", note: "with michael and friends" },
   pizza_4p: { label: "pizza 4p", emoji: "🧀" },
-  le_quartier: { label: "le quartier", emoji: "🥩" },
+  isabella_steakhouse: { label: "isabella steakhouse", emoji: "🥩" },
   suara_restaurant: { label: "suara", emoji: "🐔" },
   manzo: { label: "manzo", emoji: "🎷" },
   sophilia: { label: "sophilia", emoji: "🖼️" },
@@ -189,7 +189,7 @@ export function allowedActivities(opts: {
   if (berani === "udh_haha") {
     if (isWeekday(day)) {
       const acts: ActivityKey[] = ["pizza_4p"];
-      if (day !== "jumat_ini") acts.push("le_quartier");
+      if (day !== "jumat_ini") acts.push("isabella_steakhouse");
       acts.push("suara_restaurant");
       if (day === "jumat_ini") acts.push("manzo");
       acts.push("singapolah");
