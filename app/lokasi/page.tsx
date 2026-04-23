@@ -25,7 +25,7 @@ const LOC_STYLES: Record<string, { bg: string; fg: string; gradient?: string }> 
     gradient:
       "linear-gradient(180deg, #fff3d6 0%, #f5e7c4 100%), radial-gradient(circle at 80% 20%, rgba(255,200,100,0.5) 0 15%, transparent 16%)",
   },
-  bekasi: {
+  bintaro: {
     bg: "#e9f4ff",
     fg: "#0b2545",
     gradient:
