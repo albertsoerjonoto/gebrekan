@@ -86,7 +86,6 @@ export type ActivityKey =
   | "bouchon"
   | "juliette"
   | "mata_karanjang"
-  | "amanaia_satrio"
   | "trans_snow"
   | "pizza_4p"
   | "le_quartier"
@@ -109,7 +108,6 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   bouchon: { label: "bouchon", emoji: "🥖" },
   juliette: { label: "juliette the kitchen", emoji: "🍝" },
   mata_karanjang: { label: "mata karanjang", emoji: "👀" },
-  amanaia_satrio: { label: "amanaia satrio", emoji: "🍲" },
   trans_snow: { label: "trans snow studio bekasi", emoji: "⛷️", note: "with michael and friends" },
   pizza_4p: { label: "pizza 4p", emoji: "🧀" },
   le_quartier: { label: "le quartier", emoji: "🥩" },
@@ -217,7 +215,7 @@ export function allowedActivities(opts: {
     if (hasGoltox) out.push("little_frenchie");
     if (hasAndreaOrChristine) out.push("bouchon");
     if (hasGoltox) out.push("juliette");
-    if (hasAndreaOrChristine) out.push("mata_karanjang", "amanaia_satrio");
+    if (hasAndreaOrChristine) out.push("mata_karanjang", "txoko_senop");
     if (day === "jumat_ini") out.push("manzo");
     out.push("singapolah");
     return out;
