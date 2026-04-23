@@ -89,7 +89,7 @@ export type ActivityKey =
   | "trans_snow"
   | "pizza_4p"
   | "le_quartier"
-  | "txoko_senop"
+  | "suara_restaurant"
   | "manzo"
   | "sophilia"
   | "singapolah";
@@ -111,7 +111,7 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   trans_snow: { label: "trans snow studio bekasi", emoji: "⛷️", note: "with michael and friends" },
   pizza_4p: { label: "pizza 4p", emoji: "🧀" },
   le_quartier: { label: "le quartier", emoji: "🥩" },
-  txoko_senop: { label: "suara", emoji: "🐔" },
+  suara_restaurant: { label: "suara", emoji: "🐔" },
   manzo: { label: "manzo", emoji: "🎷" },
   sophilia: { label: "sophilia", emoji: "🖼️" },
   singapolah: { label: "singapolah", emoji: "🤪" },
@@ -190,7 +190,7 @@ export function allowedActivities(opts: {
     if (isWeekday(day)) {
       const acts: ActivityKey[] = ["pizza_4p"];
       if (day !== "jumat_ini") acts.push("le_quartier");
-      acts.push("txoko_senop");
+      acts.push("suara_restaurant");
       if (day === "jumat_ini") acts.push("manzo");
       acts.push("singapolah");
       return acts;
@@ -215,7 +215,7 @@ export function allowedActivities(opts: {
     if (hasGoltox) out.push("little_frenchie");
     if (hasAndreaOrChristine) out.push("bouchon");
     if (hasGoltox) out.push("juliette");
-    if (hasAndreaOrChristine) out.push("mata_karanjang", "txoko_senop");
+    if (hasAndreaOrChristine) out.push("mata_karanjang", "suara_restaurant");
     if (day === "jumat_ini") out.push("manzo");
     out.push("singapolah");
     return out;
