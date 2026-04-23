@@ -222,7 +222,13 @@ export function allowedActivities(opts: {
   }
 
   if (effLoc === "karawaci") {
-    return ["karting", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
+    const hasTantePona = invitees.includes("tante_pona");
+    const hasOmDom = invitees.includes("om_dom");
+    const base: ActivityKey[] = ["karting", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
+    if (hasTantePona || hasOmDom) {
+      return base.filter((a) => a !== "karting" && a !== "bouncestreet");
+    }
+    return base;
   }
   if (effLoc === "jakarta") {
     const acts: ActivityKey[] = ["faunaland", "jetski", "karting", "skorz"];
