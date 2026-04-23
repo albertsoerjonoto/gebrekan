@@ -219,7 +219,7 @@ export function allowedActivities(opts: {
     if (hasAndreaOrChristine) out.push("bouchon");
     if (hasGoltox) out.push("juliette");
     if (hasAndreaOrChristine) out.push("mata_karanjang");
-    if (hasAndreaOrChristine && !hasBoth) out.push("suara_restaurant");
+    if ((hasAndreaOrChristine || hasGoltox) && !hasBoth) out.push("suara_restaurant");
     if (day === "jumat_ini") out.push("manzo");
     if (!hasBoth) out.push("singapolah");
     return out;
