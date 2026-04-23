@@ -192,7 +192,9 @@ export function allowedActivities(opts: {
 
   if (berani === "udh_haha") {
     if (isWeekday(day)) {
-      const acts: ActivityKey[] = ["pizza_4p", "le_quartier", "txoko_senop"];
+      const acts: ActivityKey[] = ["pizza_4p"];
+      if (day !== "jumat_ini") acts.push("le_quartier");
+      acts.push("txoko_senop");
       if (day === "jumat_ini") acts.push("manzo");
       acts.push("singapolah");
       return acts;
