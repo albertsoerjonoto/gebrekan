@@ -17,7 +17,6 @@ export const BERANI_OPTIONS: { key: BeraniKey; label: string; bg: string; fg: st
 ];
 
 export type DayKey =
-  | "jumat_ini"
   | "sabtu_ini"
   | "minggu_ini"
   | "selasa_depan"
@@ -34,7 +33,6 @@ export const DAY_OPTIONS: {
   category: DayCategory;
   tone: "night" | "day";
 }[] = [
-  { key: "jumat_ini", label: "jumat ini", emoji: "🌓", time: "PM", category: "weekday", tone: "night" },
   { key: "sabtu_ini", label: "sabtu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "minggu_ini", label: "minggu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "selasa_depan", label: "selasa depan", emoji: "🌔", time: "PM", category: "weekday", tone: "night" },
@@ -190,11 +188,7 @@ export function allowedActivities(opts: {
 
   if (berani === "udh_haha") {
     if (isWeekday(day)) {
-      const acts: ActivityKey[] = ["pizza_4p"];
-      if (day !== "jumat_ini") acts.push("isabella_steakhouse");
-      acts.push("suara_restaurant");
-      if (day === "jumat_ini") acts.push("manzo");
-      acts.push("singapolah");
+      const acts: ActivityKey[] = ["pizza_4p", "isabella_steakhouse", "suara_restaurant", "singapolah"];
       return acts;
     }
     if (effLoc === "jakarta") {
@@ -220,7 +214,6 @@ export function allowedActivities(opts: {
     if (hasGoltox) out.push("juliette");
     if (hasAndreaOrChristine) out.push("mata_karanjang");
     if ((hasAndreaOrChristine || hasGoltox) && !hasBoth) out.push("suara_restaurant");
-    if (day === "jumat_ini") out.push("manzo");
     if (!hasBoth) out.push("singapolah");
     return out;
   }
