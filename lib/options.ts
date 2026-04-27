@@ -20,8 +20,8 @@ export type DayKey =
   | "jumat_ini"
   | "sabtu_ini"
   | "minggu_ini"
-  | "selasa_depan"
-  | "kamis_depan";
+  | "rabu_depan"
+  | "jumat_depan";
 
 export type DayTime = "AM" | "PM";
 export type DayCategory = "weekend" | "weekday";
@@ -37,8 +37,8 @@ export const DAY_OPTIONS: {
   { key: "jumat_ini", label: "jumat ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "sabtu_ini", label: "sabtu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "minggu_ini", label: "minggu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
-  { key: "selasa_depan", label: "selasa depan", emoji: "🌔", time: "PM", category: "weekday", tone: "night" },
-  { key: "kamis_depan", label: "kamis depan", emoji: "🌕", time: "PM", category: "weekday", tone: "night" },
+  { key: "rabu_depan", label: "rabu depan", emoji: "🌔", time: "PM", category: "weekday", tone: "night" },
+  { key: "jumat_depan", label: "jumat depan", emoji: "🌕", time: "PM", category: "weekday", tone: "night" },
 ];
 
 export type LocationKey = "jakarta" | "karawaci";
@@ -184,7 +184,10 @@ export function allowedActivities(opts: {
 
   if (berani === "udh_haha") {
     if (isWeekday(day)) {
-      return ["pizza_4p", "isabella_steakhouse", "suara_restaurant", "singapolah"];
+      const acts: ActivityKey[] = ["pizza_4p", "isabella_steakhouse", "suara_restaurant"];
+      if (day === "jumat_depan") acts.push("manzo");
+      acts.push("singapolah");
+      return acts;
     }
     if (effLoc === "jakarta") {
       const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
@@ -209,6 +212,7 @@ export function allowedActivities(opts: {
     if (hasGoltox) out.push("juliette");
     if (hasAndreaOrChristine) out.push("mata_karanjang");
     if ((hasAndreaOrChristine || hasGoltox) && !hasBoth) out.push("suara_restaurant");
+    if (day === "jumat_depan") out.push("manzo");
     if (!hasBoth) out.push("singapolah");
     return out;
   }
