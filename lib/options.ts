@@ -36,9 +36,13 @@ export const DAY_OPTIONS: {
   category: DayCategory;
   tone: DayTone;
 }[] = [
+  // chronological order from today (Mon 2026-04-27):
+  // jumat ini = Fri 1 May, sabtu ini = Sat 2 May, minggu ini = Sun 3 May,
+  // senin depan = Mon 4 May, rabu depan = Wed 6 May, jumat depan = Fri 8 May.
   { key: "jumat_ini", label: "jumat ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "sabtu_ini", label: "sabtu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "minggu_ini", label: "minggu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
+  { key: "senin_depan", label: "senin depan", emoji: "🌑", time: "late PM", category: "weekday", tone: "midnight" },
   { key: "rabu_depan", label: "rabu depan", emoji: "🌔", time: "PM", category: "weekday", tone: "night" },
   { key: "jumat_depan", label: "jumat depan", emoji: "🌕", time: "PM", category: "weekday", tone: "night" },
   { key: "senin_depan", label: "senin depan", emoji: "🌑", time: "late PM", category: "weekday", tone: "midnight" },
