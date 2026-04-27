@@ -169,8 +169,9 @@ export function allowedInvitees(
     return list;
   }
   if (location === "jakarta") {
-    const list: InviteeKey[] = ["goltox", "sales_alsut", "weirdoalien", "deedee_foodie", "ada_dech"];
+    const list: InviteeKey[] = ["goltox", "sales_alsut", "weirdoalien", "deedee_foodie"];
     if (isMingguOrJumat(day)) list.push("michael");
+    list.push("ada_dech");
     return list;
   }
   return [];
