@@ -219,10 +219,13 @@ export function allowedActivities(opts: {
     if (effLoc === "jakarta") {
       const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
       if (day === "minggu_ini") acts.push("sophilia");
+      if (day === "sabtu_ini") acts.push("kidosband");
       return acts;
     }
     if (effLoc === "karawaci") {
-      return ["karting_karawaci", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
+      const acts: ActivityKey[] = ["karting_karawaci", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
+      if (day === "sabtu_ini") acts.push("kidosband");
+      return acts;
     }
     return [];
   }
