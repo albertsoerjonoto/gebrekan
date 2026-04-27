@@ -39,10 +39,11 @@ export default function KapanPage() {
       <div className="flex flex-col gap-3">
         {DAY_OPTIONS.map((opt) => {
           const selected = state.day === opt.key;
-          const isNight = opt.tone === "night";
-          const bg = isNight ? "#0f1930" : "#ffd89b";
-          const baseText = isNight ? "#ffffff" : "#111111";
-          const timeColor = isNight ? "#ffe58a" : "#111111";
+          const bg =
+            opt.tone === "midnight" ? "#03060f" : opt.tone === "night" ? "#0f1930" : "#ffd89b";
+          const baseText = opt.tone === "day" ? "#111111" : "#ffffff";
+          const timeColor =
+            opt.tone === "midnight" ? "#7a93d6" : opt.tone === "night" ? "#ffe58a" : "#111111";
           return (
             <button
               key={opt.key}
