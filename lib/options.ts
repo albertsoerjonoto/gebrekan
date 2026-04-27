@@ -17,6 +17,7 @@ export const BERANI_OPTIONS: { key: BeraniKey; label: string; bg: string; fg: st
 ];
 
 export type DayKey =
+  | "jumat_ini"
   | "sabtu_ini"
   | "minggu_ini"
   | "selasa_depan"
@@ -33,6 +34,7 @@ export const DAY_OPTIONS: {
   category: DayCategory;
   tone: "night" | "day";
 }[] = [
+  { key: "jumat_ini", label: "jumat ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "sabtu_ini", label: "sabtu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "minggu_ini", label: "minggu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "selasa_depan", label: "selasa depan", emoji: "🌔", time: "PM", category: "weekday", tone: "night" },
@@ -118,10 +120,10 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
 };
 
 export function isWeekend(day: DayKey | null | undefined): boolean {
-  return day === "sabtu_ini" || day === "minggu_ini";
+  return day === "sabtu_ini" || day === "minggu_ini" || day === "jumat_ini";
 }
 export function isMinggu(day: DayKey | null | undefined): boolean {
-  return day === "minggu_ini";
+  return day === "minggu_ini" || day === "jumat_ini";
 }
 export function isWeekday(day: DayKey | null | undefined): boolean {
   return !!day && !isWeekend(day);
@@ -188,12 +190,11 @@ export function allowedActivities(opts: {
 
   if (berani === "udh_haha") {
     if (isWeekday(day)) {
-      const acts: ActivityKey[] = ["pizza_4p", "isabella_steakhouse", "suara_restaurant", "singapolah"];
-      return acts;
+      return ["pizza_4p", "isabella_steakhouse", "suara_restaurant", "singapolah"];
     }
     if (effLoc === "jakarta") {
       const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
-      if (day === "minggu_ini") acts.push("sophilia");
+      if (isMinggu(day)) acts.push("sophilia");
       return acts;
     }
     if (effLoc === "karawaci") {
@@ -230,7 +231,7 @@ export function allowedActivities(opts: {
   }
   if (effLoc === "jakarta") {
     const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
-    if (day === "minggu_ini") acts.push("sophilia");
+    if (isMinggu(day)) acts.push("sophilia");
     return acts;
   }
   return [];
