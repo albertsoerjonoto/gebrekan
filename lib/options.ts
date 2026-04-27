@@ -138,7 +138,7 @@ export const ACTIVITY_LABELS: Record<
   j_sparrow: { label: "j.sparrow", emoji: "🏴‍☠️" },
   broadway: { label: "broadway", emoji: "🎭" },
   triple_h: { label: "triple H", emoji: "🍹" },
-  kidosband: { label: "kidosband makeup by sophair", emoji: "💄", bg: "#CE3D66", fg: "#ffffff" },
+  kidosband: { label: "kidosband makeup by sophair", emoji: "💄", mapsUrl: "https://maps.app.goo.gl/45AK6XqD1MVhc7W29?g_st=ic", bg: "#CE3D66", fg: "#ffffff" },
   arzuca: { label: "arzuca", emoji: "🍽️", mapsUrl: "https://www.google.com/maps/search/Arzuca+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
   nine_table: { label: "nine table", emoji: "🍷", mapsUrl: "https://www.google.com/maps/search/Nine+Table+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
   bermvda: { label: "bermvda", emoji: "☕", mapsUrl: "https://www.google.com/maps/search/Bermvda+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
@@ -229,9 +229,7 @@ export function allowedActivities(opts: {
       return acts;
     }
     if (effLoc === "karawaci") {
-      const acts: ActivityKey[] = ["karting_karawaci", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
-      if (day === "sabtu_ini") acts.push("kidosband");
-      return acts;
+      return ["karting_karawaci", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
     }
     return [];
   }
