@@ -45,7 +45,6 @@ export const DAY_OPTIONS: {
   { key: "senin_depan", label: "senin depan", emoji: "🌑", time: "late PM", category: "weekday", tone: "midnight" },
   { key: "rabu_depan", label: "rabu depan", emoji: "🌔", time: "PM", category: "weekday", tone: "night" },
   { key: "jumat_depan", label: "jumat depan", emoji: "🌕", time: "PM", category: "weekday", tone: "night" },
-  { key: "senin_depan", label: "senin depan", emoji: "🌑", time: "late PM", category: "weekday", tone: "midnight" },
 ];
 
 export type LocationKey = "jakarta" | "karawaci";
