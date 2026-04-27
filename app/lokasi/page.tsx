@@ -25,12 +25,6 @@ const LOC_STYLES: Record<string, { bg: string; fg: string; gradient?: string }> 
     gradient:
       "linear-gradient(180deg, #fff3d6 0%, #f5e7c4 100%), radial-gradient(circle at 80% 20%, rgba(255,200,100,0.5) 0 15%, transparent 16%)",
   },
-  bintaro: {
-    bg: "#e9f4ff",
-    fg: "#0b2545",
-    gradient:
-      "linear-gradient(180deg, #f7fbff 0%, #d6e8ff 100%), radial-gradient(circle at 15% 30%, #ffffff 0 6%, transparent 7%), radial-gradient(circle at 40% 20%, #ffffff 0 5%, transparent 6%), radial-gradient(circle at 70% 35%, #ffffff 0 4%, transparent 5%), radial-gradient(circle at 90% 25%, #ffffff 0 5%, transparent 6%)",
-  },
 };
 
 export default function LokasiPage() {

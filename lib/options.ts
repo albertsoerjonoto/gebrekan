@@ -41,12 +41,11 @@ export const DAY_OPTIONS: {
   { key: "kamis_depan", label: "kamis depan", emoji: "🌕", time: "PM", category: "weekday", tone: "night" },
 ];
 
-export type LocationKey = "jakarta" | "karawaci" | "bintaro";
+export type LocationKey = "jakarta" | "karawaci";
 
 export const LOCATION_LABELS: Record<LocationKey, { label: string; emoji: string }> = {
   jakarta: { label: "jakarta", emoji: "🏙️" },
   karawaci: { label: "karawaci", emoji: "🏠" },
-  bintaro: { label: "bintaro", emoji: "❄️" },
 };
 
 export type InviteeKey =
@@ -87,7 +86,6 @@ export type ActivityKey =
   | "bouchon"
   | "juliette"
   | "mata_karanjang"
-  | "trans_snow"
   | "pizza_4p"
   | "isabella_steakhouse"
   | "suara_restaurant"
@@ -110,7 +108,6 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   bouchon: { label: "bouchon", emoji: "🥖", mapsUrl: "https://www.google.com/maps/search/Bouchon+Jakarta+Jl+Senopati+No+79+Selong+Kebayoran+Baru" },
   juliette: { label: "juliette", emoji: "🍝", mapsUrl: "https://www.google.com/maps/search/Juliette+the+Kitchen+Menara+Astra+Sudirman+Jakarta" },
   mata_karanjang: { label: "mata karanjang", emoji: "👀", mapsUrl: "https://www.google.com/maps/search/Mata+Karanjang+Jl+Wijaya+VI+No+14A+Melawai+Kebayoran+Baru+Jakarta" },
-  trans_snow: { label: "trans snow bintaro", emoji: "⛷️", note: "with michael and friends", mapsUrl: "https://www.google.com/maps/search/Trans+Snow+World+Bintaro+Transpark+Mall" },
   pizza_4p: { label: "pizza 4p", emoji: "🧀", mapsUrl: "https://maps.app.goo.gl/B4KZUYt1u4Y9ND477" },
   isabella_steakhouse: { label: "isabella", emoji: "🥩", mapsUrl: "https://www.google.com/maps/search/Isabella+Steakhouse+Jl+Wolter+Monginsidi+67A+Kebayoran+Baru+Jakarta" },
   suara_restaurant: { label: "suara", emoji: "🐔", mapsUrl: "https://maps.app.goo.gl/u739AspVNgj9yfhz8" },
@@ -143,9 +140,7 @@ export function needsInviteesPage(berani: BeraniKey | null | undefined): boolean
 
 export function allowedLocations(day: DayKey | null | undefined): LocationKey[] {
   if (!isWeekend(day)) return [];
-  const base: LocationKey[] = ["jakarta", "karawaci"];
-  if (isMinggu(day)) base.push("bintaro");
-  return base;
+  return ["jakarta", "karawaci"];
 }
 
 export function allowedInvitees(
@@ -161,9 +156,6 @@ export function allowedInvitees(
   }
   if (location === "jakarta") {
     return ["goltox", "sales_alsut", "weirdoalien", "deedee_foodie", "ada_dech"];
-  }
-  if (location === "bintaro") {
-    return ["goltox", "sales_alsut", "macan", "ngikut_michael"];
   }
   return [];
 }
@@ -186,8 +178,6 @@ export function allowedActivities(opts: {
   const { berani, day, location, invitees } = opts;
   const effLoc = effectiveLocation(day, location);
 
-  if (effLoc === "bintaro") return ["trans_snow", "bouncestreet"];
-
   if (berani === "udh_haha") {
     if (isWeekday(day)) {
       return ["pizza_4p", "isabella_steakhouse", "suara_restaurant", "singapolah"];
@@ -198,7 +188,7 @@ export function allowedActivities(opts: {
       return acts;
     }
     if (effLoc === "karawaci") {
-      return ["karting_karawaci", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
+      return ["karting_karawaci", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
     }
     return [];
   }
@@ -222,9 +212,9 @@ export function allowedActivities(opts: {
   if (effLoc === "karawaci") {
     const hasTantePona = invitees.includes("tante_pona");
     const hasOmDom = invitees.includes("om_dom");
-    const base: ActivityKey[] = ["karting_karawaci", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
+    const base: ActivityKey[] = ["karting_karawaci", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
     return base.filter((a) => {
-      if (a === "karting_karawaci") return !(hasTantePona || hasOmDom);
+      if (a === "karting_karawaci" || a === "bouncestreet") return !(hasTantePona || hasOmDom);
       if (a === "nyapu_pel") return hasTantePona || hasOmDom;
       return true;
     });
