@@ -57,7 +57,7 @@ export type InviteeKey =
   | "weirdoalien"
   | "deedee_foodie"
   | "ada_dech"
-  | "ngikut_michael";
+  | "michael";
 
 export const INVITEE_LABELS: Record<InviteeKey, { label: string; emoji: string }> = {
   goltox: { label: "goltox", emoji: "🧈" },
@@ -68,7 +68,7 @@ export const INVITEE_LABELS: Record<InviteeKey, { label: string; emoji: string }
   weirdoalien: { label: "weirdoalien", emoji: "👽" },
   deedee_foodie: { label: "deedee foodie", emoji: "🍝" },
   ada_dech: { label: "ada dech", emoji: "🤨" },
-  ngikut_michael: { label: "ngikut michael aja", emoji: "👶" },
+  michael: { label: "michael", emoji: "👶" },
 };
 
 export type ActivityKey =
@@ -152,10 +152,14 @@ export function allowedInvitees(
   }
   if (!isWeekend(day)) return [];
   if (location === "karawaci") {
-    return ["goltox", "sales_alsut", "tante_pona", "om_dom", "macan"];
+    const list: InviteeKey[] = ["goltox", "sales_alsut", "tante_pona", "om_dom", "macan"];
+    if (isMinggu(day)) list.push("michael");
+    return list;
   }
   if (location === "jakarta") {
-    return ["goltox", "sales_alsut", "weirdoalien", "deedee_foodie", "ada_dech"];
+    const list: InviteeKey[] = ["goltox", "sales_alsut", "weirdoalien", "deedee_foodie", "ada_dech"];
+    if (isMinggu(day)) list.push("michael");
+    return list;
   }
   return [];
 }
