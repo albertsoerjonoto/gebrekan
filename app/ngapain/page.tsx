@@ -55,6 +55,8 @@ export default function NgapainPage() {
         {options.map((key) => {
           const meta = ACTIVITY_LABELS[key];
           const selected = state.activity === key;
+          const customBg = meta.bg;
+          const customFg = meta.fg ?? "#ffffff";
           return (
             <button
               key={key}
@@ -66,8 +68,9 @@ export default function NgapainPage() {
               className="option-card"
               data-selected={selected}
               style={{
-                borderColor: selected ? accent : undefined,
-                color: selected ? accent : undefined,
+                background: customBg,
+                color: customBg ? customFg : selected ? accent : undefined,
+                borderColor: selected ? accent : customBg ? "transparent" : undefined,
                 outline: selected ? `2px solid ${accent}` : "none",
                 outlineOffset: 2,
                 flexDirection: "column",

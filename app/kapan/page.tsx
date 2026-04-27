@@ -44,6 +44,7 @@ export default function KapanPage() {
           const baseText = opt.tone === "day" ? "#111111" : "#ffffff";
           const timeColor =
             opt.tone === "midnight" ? "#7a93d6" : opt.tone === "night" ? "#ffe58a" : "#111111";
+          const isSpecialEdition = opt.key === "sabtu_ini";
           return (
             <button
               key={opt.key}
@@ -57,9 +58,10 @@ export default function KapanPage() {
               style={{
                 background: bg,
                 color: baseText,
-                borderColor: selected ? accent : "transparent",
+                borderColor: selected ? accent : isSpecialEdition ? "#CE3D66" : "transparent",
                 outline: selected ? `2px solid ${accent}` : "none",
                 outlineOffset: 2,
+                position: "relative",
               }}
             >
               <span className="flex items-center gap-3 text-base">
@@ -69,6 +71,25 @@ export default function KapanPage() {
               <span className="text-sm font-bold" style={{ color: timeColor }}>
                 {opt.time}
               </span>
+              {isSpecialEdition ? (
+                <span
+                  aria-hidden
+                  style={{
+                    position: "absolute",
+                    top: -8,
+                    left: 16,
+                    fontSize: 12,
+                    background: "#CE3D66",
+                    color: "#ffffff",
+                    padding: "1px 8px",
+                    borderRadius: 999,
+                    fontWeight: 700,
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  💄 special edition
+                </span>
+              ) : null}
             </button>
           );
         })}
