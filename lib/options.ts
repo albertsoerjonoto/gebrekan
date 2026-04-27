@@ -119,7 +119,7 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
 export function isWeekend(day: DayKey | null | undefined): boolean {
   return day === "sabtu_ini" || day === "minggu_ini" || day === "jumat_ini";
 }
-export function isMinggu(day: DayKey | null | undefined): boolean {
+export function isMingguOrJumat(day: DayKey | null | undefined): boolean {
   return day === "minggu_ini" || day === "jumat_ini";
 }
 export function isWeekday(day: DayKey | null | undefined): boolean {
@@ -153,12 +153,12 @@ export function allowedInvitees(
   if (!isWeekend(day)) return [];
   if (location === "karawaci") {
     const list: InviteeKey[] = ["goltox", "sales_alsut", "tante_pona", "om_dom", "macan"];
-    if (isMinggu(day)) list.push("michael");
+    if (isMingguOrJumat(day)) list.push("michael");
     return list;
   }
   if (location === "jakarta") {
     const list: InviteeKey[] = ["goltox", "sales_alsut", "weirdoalien", "deedee_foodie", "ada_dech"];
-    if (isMinggu(day)) list.push("michael");
+    if (isMingguOrJumat(day)) list.push("michael");
     return list;
   }
   return [];
@@ -188,7 +188,7 @@ export function allowedActivities(opts: {
     }
     if (effLoc === "jakarta") {
       const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
-      if (isMinggu(day)) acts.push("sophilia");
+      if (day === "minggu_ini") acts.push("sophilia");
       return acts;
     }
     if (effLoc === "karawaci") {
@@ -225,7 +225,7 @@ export function allowedActivities(opts: {
   }
   if (effLoc === "jakarta") {
     const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
-    if (isMinggu(day)) acts.push("sophilia");
+    if (day === "minggu_ini") acts.push("sophilia");
     return acts;
   }
   return [];
