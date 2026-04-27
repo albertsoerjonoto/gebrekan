@@ -106,7 +106,10 @@ export type ActivityKey =
   | "j_sparrow"
   | "broadway"
   | "triple_h"
-  | "kidosband";
+  | "kidosband"
+  | "arzuca"
+  | "nine_table"
+  | "bermvda";
 
 export const ACTIVITY_LABELS: Record<
   ActivityKey,
@@ -136,6 +139,9 @@ export const ACTIVITY_LABELS: Record<
   broadway: { label: "broadway", emoji: "🎭" },
   triple_h: { label: "triple H", emoji: "🍹" },
   kidosband: { label: "kidosband makeup by sophair", emoji: "💄", bg: "#CE3D66", fg: "#ffffff" },
+  arzuca: { label: "arzuca", emoji: "🍽️", mapsUrl: "https://www.google.com/maps/search/Arzuca+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
+  nine_table: { label: "nine table", emoji: "🍷", mapsUrl: "https://www.google.com/maps/search/Nine+Table+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
+  bermvda: { label: "bermvda", emoji: "☕", mapsUrl: "https://www.google.com/maps/search/Bermvda+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
 };
 
 export function isWeekend(day: DayKey | null | undefined): boolean {
@@ -206,7 +212,7 @@ export function allowedActivities(opts: {
   const { berani, day, location, invitees } = opts;
   const effLoc = effectiveLocation(day, location);
 
-  if (day === "senin_depan") return ["j_sparrow", "broadway", "triple_h"];
+  if (day === "senin_depan") return ["j_sparrow", "broadway", "triple_h", "arzuca", "nine_table", "bermvda"];
   if (invitees.includes("michael_and_friends")) return ["kidosband"];
 
   if (berani === "udh_haha") {
