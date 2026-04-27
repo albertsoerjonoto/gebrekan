@@ -21,10 +21,12 @@ export type DayKey =
   | "sabtu_ini"
   | "minggu_ini"
   | "rabu_depan"
-  | "jumat_depan";
+  | "jumat_depan"
+  | "senin_depan";
 
-export type DayTime = "AM" | "PM";
+export type DayTime = "AM" | "PM" | "late PM";
 export type DayCategory = "weekend" | "weekday";
+export type DayTone = "day" | "night" | "midnight";
 
 export const DAY_OPTIONS: {
   key: DayKey;
@@ -32,13 +34,14 @@ export const DAY_OPTIONS: {
   emoji: string;
   time: DayTime;
   category: DayCategory;
-  tone: "night" | "day";
+  tone: DayTone;
 }[] = [
   { key: "jumat_ini", label: "jumat ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "sabtu_ini", label: "sabtu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "minggu_ini", label: "minggu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
   { key: "rabu_depan", label: "rabu depan", emoji: "🌔", time: "PM", category: "weekday", tone: "night" },
   { key: "jumat_depan", label: "jumat depan", emoji: "🌕", time: "PM", category: "weekday", tone: "night" },
+  { key: "senin_depan", label: "senin depan", emoji: "🌑", time: "late PM", category: "weekday", tone: "midnight" },
 ];
 
 export type LocationKey = "jakarta" | "karawaci";
@@ -91,7 +94,10 @@ export type ActivityKey =
   | "suara_restaurant"
   | "manzo"
   | "sophilia"
-  | "singapolah";
+  | "singapolah"
+  | "j_sparrow"
+  | "broadway"
+  | "triple_h";
 
 export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string; note?: string; mapsUrl?: string }> = {
   karting_jakarta: { label: "karting", emoji: "🏎️", mapsUrl: "https://www.google.com/maps/search/Speedy+Karting+Plaza+Semanggi+Jakarta" },
@@ -114,6 +120,9 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   manzo: { label: "manzo", emoji: "🎷", mapsUrl: "https://www.google.com/maps/search/Manzo+Jakarta+Jl+Wijaya+II+No+28+Melawai+Kebayoran+Baru" },
   sophilia: { label: "sophilia", emoji: "🖼️", mapsUrl: "https://maps.app.goo.gl/wtta4hQ39o19GvjH6" },
   singapolah: { label: "singapolah", emoji: "🤪", mapsUrl: "https://www.google.com/maps/search/Singapolah+SCBD+Jl+Jenderal+Sudirman+Kav+58+Jakarta+Selatan" },
+  j_sparrow: { label: "j.sparrow", emoji: "🏴‍☠️" },
+  broadway: { label: "broadway", emoji: "🎭" },
+  triple_h: { label: "triple H", emoji: "🍹" },
 };
 
 export function isWeekend(day: DayKey | null | undefined): boolean {
@@ -181,6 +190,8 @@ export function allowedActivities(opts: {
 }): ActivityKey[] {
   const { berani, day, location, invitees } = opts;
   const effLoc = effectiveLocation(day, location);
+
+  if (day === "senin_depan") return ["j_sparrow", "broadway", "triple_h"];
 
   if (berani === "udh_haha") {
     if (isWeekday(day)) {
