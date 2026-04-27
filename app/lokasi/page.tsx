@@ -102,7 +102,7 @@ export default function LokasiPage() {
                     letterSpacing: 0.5,
                   }}
                 >
-                  💄 special edition
+                  💄
                 </span>
               ) : null}
             </button>

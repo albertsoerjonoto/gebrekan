@@ -87,7 +87,7 @@ export default function KapanPage() {
                     letterSpacing: 0.5,
                   }}
                 >
-                  💄 special edition
+                  💄
                 </span>
               ) : null}
             </button>
