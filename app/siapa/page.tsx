@@ -41,6 +41,8 @@ export default function SiapaPage() {
         {options.map((key) => {
           const meta = INVITEE_LABELS[key];
           const selected = state.invitees.includes(key);
+          const customBg = meta.bg;
+          const customFg = meta.fg ?? "#ffffff";
           return (
             <button
               key={key}
@@ -49,8 +51,9 @@ export default function SiapaPage() {
               className="option-card"
               data-selected={selected}
               style={{
-                borderColor: selected ? accent : undefined,
-                color: selected ? accent : undefined,
+                background: customBg,
+                color: customBg ? customFg : selected ? accent : undefined,
+                borderColor: selected ? accent : customBg ? "transparent" : undefined,
                 outline: selected ? `2px solid ${accent}` : "none",
                 outlineOffset: 2,
               }}
@@ -63,9 +66,9 @@ export default function SiapaPage() {
                 aria-hidden
                 className="flex h-6 w-6 items-center justify-center rounded-full border"
                 style={{
-                  borderColor: selected ? accent : "var(--border)",
-                  background: selected ? accent : "transparent",
-                  color: "#fff",
+                  borderColor: customBg ? customFg : selected ? accent : "var(--border)",
+                  background: selected ? (customBg ? customFg : accent) : "transparent",
+                  color: selected ? (customBg ?? "#fff") : "transparent",
                 }}
               >
                 {selected ? "✓" : ""}

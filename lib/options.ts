@@ -63,9 +63,13 @@ export type InviteeKey =
   | "weirdoalien"
   | "deedee_foodie"
   | "ada_dech"
-  | "michael";
+  | "michael"
+  | "michael_and_friends";
 
-export const INVITEE_LABELS: Record<InviteeKey, { label: string; emoji: string }> = {
+export const INVITEE_LABELS: Record<
+  InviteeKey,
+  { label: string; emoji: string; bg?: string; fg?: string }
+> = {
   goltox: { label: "goltox", emoji: "🧈" },
   sales_alsut: { label: "sales alsut", emoji: "😇" },
   tante_pona: { label: "tante pona", emoji: "🐷" },
@@ -75,6 +79,7 @@ export const INVITEE_LABELS: Record<InviteeKey, { label: string; emoji: string }
   deedee_foodie: { label: "deedee foodie", emoji: "🍝" },
   ada_dech: { label: "ada dech", emoji: "🤨" },
   michael: { label: "michael", emoji: "👶" },
+  michael_and_friends: { label: "michael and friends", emoji: "🧒", bg: "#CE3D66", fg: "#ffffff" },
 };
 
 export type ActivityKey =
@@ -100,9 +105,13 @@ export type ActivityKey =
   | "singapolah"
   | "j_sparrow"
   | "broadway"
-  | "triple_h";
+  | "triple_h"
+  | "kidosband";
 
-export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string; note?: string; mapsUrl?: string }> = {
+export const ACTIVITY_LABELS: Record<
+  ActivityKey,
+  { label: string; emoji: string; note?: string; mapsUrl?: string; bg?: string; fg?: string }
+> = {
   karting_jakarta: { label: "karting", emoji: "🏎️", mapsUrl: "https://www.google.com/maps/search/Speedy+Karting+Plaza+Semanggi+Jakarta" },
   karting_karawaci: { label: "karting", emoji: "🏎️", mapsUrl: "https://www.google.com/maps/search/Playtopia+Sports+Supermal+Karawaci" },
   bouncestreet: { label: "bouncestreet asia", emoji: "🤸‍♂️", mapsUrl: "https://www.google.com/maps/search/BounceStreet+Asia+Bintaro" },
@@ -126,6 +135,7 @@ export const ACTIVITY_LABELS: Record<ActivityKey, { label: string; emoji: string
   j_sparrow: { label: "j.sparrow", emoji: "🏴‍☠️" },
   broadway: { label: "broadway", emoji: "🎭" },
   triple_h: { label: "triple H", emoji: "🍹" },
+  kidosband: { label: "kidosband makeup by sophair", emoji: "💄", bg: "#CE3D66", fg: "#ffffff" },
 };
 
 export function isWeekend(day: DayKey | null | undefined): boolean {
@@ -171,6 +181,7 @@ export function allowedInvitees(
   if (location === "jakarta") {
     const list: InviteeKey[] = ["goltox", "sales_alsut", "weirdoalien", "deedee_foodie"];
     if (isMingguOrJumat(day)) list.push("michael");
+    if (day === "sabtu_ini") list.push("michael_and_friends");
     list.push("ada_dech");
     return list;
   }
@@ -196,6 +207,7 @@ export function allowedActivities(opts: {
   const effLoc = effectiveLocation(day, location);
 
   if (day === "senin_depan") return ["j_sparrow", "broadway", "triple_h"];
+  if (invitees.includes("michael_and_friends")) return ["kidosband"];
 
   if (berani === "udh_haha") {
     if (isWeekday(day)) {

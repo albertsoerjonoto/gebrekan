@@ -61,6 +61,7 @@ export default function LokasiPage() {
           const meta = LOCATION_LABELS[key];
           const style = LOC_STYLES[key];
           const selected = state.location === key;
+          const isSpecialEdition = state.day === "sabtu_ini" && key === "jakarta";
           return (
             <button
               key={key}
@@ -74,16 +75,36 @@ export default function LokasiPage() {
               style={{
                 background: style.gradient ?? style.bg,
                 color: style.fg,
-                borderColor: selected ? accent : "transparent",
+                borderColor: selected ? accent : isSpecialEdition ? "#CE3D66" : "transparent",
                 outline: selected ? `2px solid ${accent}` : "none",
                 outlineOffset: 2,
                 minHeight: 88,
+                position: "relative",
               }}
             >
               <span className="flex items-center gap-3 text-lg font-bold">
                 <span className="text-2xl">{meta.emoji}</span>
                 <span>{meta.label}</span>
               </span>
+              {isSpecialEdition ? (
+                <span
+                  aria-hidden
+                  style={{
+                    position: "absolute",
+                    top: -8,
+                    left: 16,
+                    fontSize: 12,
+                    background: "#CE3D66",
+                    color: "#ffffff",
+                    padding: "1px 8px",
+                    borderRadius: 999,
+                    fontWeight: 700,
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  💄 special edition
+                </span>
+              ) : null}
             </button>
           );
         })}
