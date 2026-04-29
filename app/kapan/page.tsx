@@ -30,6 +30,14 @@ export default function KapanPage() {
     return "/ngapain";
   };
 
+  // Hide weekday options when sophia needs companions (anything other than
+  // "udh HAHA"). Source list in lib/options.ts is left intact so we can put
+  // them back later by removing this filter.
+  const visibleDayOptions =
+    state.berani && state.berani !== "udh_haha"
+      ? DAY_OPTIONS.filter((opt) => opt.category !== "weekday")
+      : DAY_OPTIONS;
+
   return (
     <PageShell
       page="kapan"
@@ -37,7 +45,7 @@ export default function KapanPage() {
       back={{ href: "/" }}
     >
       <div className="flex flex-col gap-3">
-        {DAY_OPTIONS.map((opt) => {
+        {visibleDayOptions.map((opt) => {
           const selected = state.day === opt.key;
           const bg =
             opt.tone === "midnight" ? "#03060f" : opt.tone === "night" ? "#0f1930" : "#ffd89b";
