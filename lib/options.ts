@@ -109,7 +109,8 @@ export type ActivityKey =
   | "kidosband"
   | "arzuca"
   | "nine_table"
-  | "bermvda";
+  | "bermvda"
+  | "bxsea";
 
 export const ACTIVITY_LABELS: Record<
   ActivityKey,
@@ -142,6 +143,7 @@ export const ACTIVITY_LABELS: Record<
   arzuca: { label: "arzuca", emoji: "🍽️", mapsUrl: "https://www.google.com/maps/search/Arzuca+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
   nine_table: { label: "nine table", emoji: "🍷", mapsUrl: "https://www.google.com/maps/search/Nine+Table+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
   bermvda: { label: "bermvda", emoji: "☕", mapsUrl: "https://www.google.com/maps/search/Bermvda+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
+  bxsea: { label: "bxsea aquarium", emoji: "🐠", mapsUrl: "https://www.google.com/maps/search/BxSea+Aquarium+QBig+BSD+City+Tangerang" },
 };
 
 export function isWeekend(day: DayKey | null | undefined): boolean {
@@ -229,7 +231,7 @@ export function allowedActivities(opts: {
       return acts;
     }
     if (effLoc === "karawaci") {
-      return ["karting_karawaci", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
+      return ["karting_karawaci", "bouncestreet", "timezone_karawaci", "bxsea", "masak_rumah", "nyapu_pel", "jalan_mall"];
     }
     return [];
   }
@@ -254,7 +256,7 @@ export function allowedActivities(opts: {
   if (effLoc === "karawaci") {
     const hasTantePona = invitees.includes("tante_pona");
     const hasOmDom = invitees.includes("om_dom");
-    const base: ActivityKey[] = ["karting_karawaci", "bouncestreet", "timezone_karawaci", "masak_rumah", "nyapu_pel", "jalan_mall"];
+    const base: ActivityKey[] = ["karting_karawaci", "bouncestreet", "timezone_karawaci", "bxsea", "masak_rumah", "nyapu_pel", "jalan_mall"];
     return base.filter((a) => {
       if (a === "karting_karawaci" || a === "bouncestreet") return !(hasTantePona || hasOmDom);
       if (a === "nyapu_pel") return hasTantePona || hasOmDom;
