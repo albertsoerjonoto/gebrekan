@@ -89,6 +89,7 @@ export type ActivityKey =
   | "masak_rumah"
   | "nyapu_pel"
   | "jalan_mall"
+  | "jalan_mall_jakarta"
   | "timezone_karawaci"
   | "faunaland"
   | "jetski"
@@ -122,6 +123,7 @@ export const ACTIVITY_LABELS: Record<
   masak_rumah: { label: "masak di rumah", emoji: "🍳" },
   nyapu_pel: { label: "nyapu pel rumah", emoji: "🧹" },
   jalan_mall: { label: "jalan2 ke mall", emoji: "🏬", mapsUrl: "https://www.google.com/maps/place/Supermal+Karawaci/@-6.226959,106.6050183,17z/data=!3m1!4b1!4m5!3m4!1s0x2e69fc1fa03eb34d:0xf630dc3815cc7464!8m2!3d-6.226959!4d106.607207" },
+  jalan_mall_jakarta: { label: "jalan2 ke mall", emoji: "🏬" },
   timezone_karawaci: { label: "timezone karawaci", emoji: "🎢", mapsUrl: "https://www.google.com/maps/search/Timezone+Supermal+Karawaci" },
   faunaland: { label: "faunaland", emoji: "🐘", mapsUrl: "https://www.google.com/maps/search/Faunaland+Ancol+Ecopark+Jakarta" },
   jetski: { label: "jetski", emoji: "🚤", mapsUrl: "https://www.google.com/maps/search/Seadoo+Safari+Jakarta+Marina+Ancol" },
@@ -228,6 +230,7 @@ export function allowedActivities(opts: {
       const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
       if (day === "minggu_ini") acts.push("sophilia");
       if (day === "sabtu_ini") acts.push("kidosband");
+      acts.push("jalan_mall_jakarta");
       return acts;
     }
     if (effLoc === "karawaci") {
@@ -266,6 +269,7 @@ export function allowedActivities(opts: {
   if (effLoc === "jakarta") {
     const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
     if (day === "minggu_ini") acts.push("sophilia");
+    acts.push("jalan_mall_jakarta");
     return acts;
   }
   return [];
