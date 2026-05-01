@@ -1,3 +1,6 @@
+import type { DayOption, DayCategory, DayTime, DayTone } from "./dayOptions";
+import { findActiveDayOption } from "./dayOptions";
+
 export const COLORS = {
   bossy: "#CE3D66",
   french: "#0072BB",
@@ -16,36 +19,7 @@ export const BERANI_OPTIONS: { key: BeraniKey; label: string; bg: string; fg: st
   { key: "wew", label: "wew", bg: "#0072BB", fg: "#ffffff" },
 ];
 
-export type DayKey =
-  | "jumat_ini"
-  | "sabtu_ini"
-  | "minggu_ini"
-  | "rabu_depan"
-  | "jumat_depan"
-  | "senin_depan";
-
-export type DayTime = "AM" | "PM" | "late PM";
-export type DayCategory = "weekend" | "weekday";
-export type DayTone = "day" | "night" | "midnight";
-
-export const DAY_OPTIONS: {
-  key: DayKey;
-  label: string;
-  emoji: string;
-  time: DayTime;
-  category: DayCategory;
-  tone: DayTone;
-}[] = [
-  // chronological order from today (Mon 2026-04-27):
-  // jumat ini = Fri 1 May, sabtu ini = Sat 2 May, minggu ini = Sun 3 May,
-  // senin depan = Mon 4 May, rabu depan = Wed 6 May, jumat depan = Fri 8 May.
-  { key: "jumat_ini", label: "jumat ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
-  { key: "sabtu_ini", label: "sabtu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
-  { key: "minggu_ini", label: "minggu ini", emoji: "☀️", time: "AM", category: "weekend", tone: "day" },
-  { key: "senin_depan", label: "senin depan", emoji: "🌑", time: "late PM", category: "weekday", tone: "midnight" },
-  { key: "rabu_depan", label: "rabu depan", emoji: "🌔", time: "PM", category: "weekday", tone: "night" },
-  { key: "jumat_depan", label: "jumat depan", emoji: "🌕", time: "PM", category: "weekday", tone: "night" },
-];
+export type { DayOption, DayCategory, DayTime, DayTone };
 
 export type LocationKey = "jakarta" | "karawaci";
 
@@ -63,8 +37,7 @@ export type InviteeKey =
   | "weirdoalien"
   | "deedee_foodie"
   | "ada_dech"
-  | "michael"
-  | "michael_and_friends";
+  | "michael";
 
 export const INVITEE_LABELS: Record<
   InviteeKey,
@@ -79,7 +52,6 @@ export const INVITEE_LABELS: Record<
   deedee_foodie: { label: "deedee foodie", emoji: "🍝" },
   ada_dech: { label: "ada dech", emoji: "🤨" },
   michael: { label: "michael", emoji: "👶" },
-  michael_and_friends: { label: "michael and friends", emoji: "🧒", bg: "#CE3D66", fg: "#ffffff" },
 };
 
 export type ActivityKey =
@@ -107,7 +79,6 @@ export type ActivityKey =
   | "j_sparrow"
   | "broadway"
   | "triple_h"
-  | "kidosband"
   | "arzuca"
   | "nine_table"
   | "bermvda"
@@ -141,28 +112,27 @@ export const ACTIVITY_LABELS: Record<
   j_sparrow: { label: "j.sparrow", emoji: "🏴‍☠️", mapsUrl: "https://www.google.com/maps/search/J.Sparrow+Bar+Grill+Noble+House+Mega+Kuningan+Jakarta+Selatan" },
   broadway: { label: "broadway", emoji: "🎭", mapsUrl: "https://www.google.com/maps/search/Broadway+Bar+Lounge+Menara+Rajawali+Mega+Kuningan+Jakarta+Selatan" },
   triple_h: { label: "triple H", emoji: "🍹", mapsUrl: "https://www.google.com/maps/search/Triple+H+Bar+One+Satrio+Kuningan+Jakarta+Selatan" },
-  kidosband: { label: "kidosband makeup by sophair", emoji: "💄", mapsUrl: "https://maps.app.goo.gl/45AK6XqD1MVhc7W29?g_st=ic", bg: "#CE3D66", fg: "#ffffff" },
   arzuca: { label: "arzuca", emoji: "🍽️", mapsUrl: "https://www.google.com/maps/search/Arzuca+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
   nine_table: { label: "nine table", emoji: "🍷", mapsUrl: "https://www.google.com/maps/search/Nine+Table+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
   bermvda: { label: "bermvda", emoji: "☕", mapsUrl: "https://www.google.com/maps/search/Bermvda+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
   bxsea: { label: "bxsea", emoji: "🐠", mapsUrl: "https://www.google.com/maps/search/BxSea+Aquarium+QBig+BSD+City+Tangerang" },
 };
 
-export function isWeekend(day: DayKey | null | undefined): boolean {
-  return day === "sabtu_ini" || day === "minggu_ini" || day === "jumat_ini";
+export function isWeekend(day: DayOption | null | undefined): boolean {
+  return day?.category === "weekend";
 }
-export function isMingguOrJumat(day: DayKey | null | undefined): boolean {
-  return day === "minggu_ini" || day === "jumat_ini";
+export function isMingguOrJumat(day: DayOption | null | undefined): boolean {
+  return !!(day && (day.isSunday || day.isHoliday));
 }
-export function isWeekday(day: DayKey | null | undefined): boolean {
-  return !!day && !isWeekend(day);
+export function isWeekday(day: DayOption | null | undefined): boolean {
+  return day?.category === "weekday";
 }
 
 export function getAccent(berani: BeraniKey | null | undefined): string {
   return berani === "udh_haha" ? COLORS.bossy : COLORS.french;
 }
 
-export function needsLocationPage(day: DayKey | null | undefined): boolean {
+export function needsLocationPage(day: DayOption | null | undefined): boolean {
   return isWeekend(day);
 }
 
@@ -170,13 +140,13 @@ export function needsInviteesPage(berani: BeraniKey | null | undefined): boolean
   return !!berani && berani !== "udh_haha";
 }
 
-export function allowedLocations(day: DayKey | null | undefined): LocationKey[] {
+export function allowedLocations(day: DayOption | null | undefined): LocationKey[] {
   if (!isWeekend(day)) return [];
   return ["jakarta", "karawaci"];
 }
 
 export function allowedInvitees(
-  day: DayKey | null | undefined,
+  day: DayOption | null | undefined,
   location: LocationKey | null | undefined,
 ): InviteeKey[] {
   if (isWeekday(day)) {
@@ -191,7 +161,6 @@ export function allowedInvitees(
   if (location === "jakarta") {
     const list: InviteeKey[] = ["goltox", "sales_alsut", "weirdoalien", "deedee_foodie"];
     if (isMingguOrJumat(day)) list.push("michael");
-    if (day === "sabtu_ini") list.push("michael_and_friends");
     list.push("ada_dech");
     return list;
   }
@@ -199,7 +168,7 @@ export function allowedInvitees(
 }
 
 export function effectiveLocation(
-  day: DayKey | null | undefined,
+  day: DayOption | null | undefined,
   location: LocationKey | null | undefined,
 ): LocationKey | "scbd" | null {
   if (isWeekday(day)) return "scbd";
@@ -209,27 +178,27 @@ export function effectiveLocation(
 
 export function allowedActivities(opts: {
   berani: BeraniKey | null | undefined;
-  day: DayKey | null | undefined;
+  day: DayOption | null | undefined;
   location: LocationKey | null | undefined;
   invitees: InviteeKey[];
 }): ActivityKey[] {
   const { berani, day, location, invitees } = opts;
   const effLoc = effectiveLocation(day, location);
 
-  if (day === "senin_depan") return ["j_sparrow", "broadway", "triple_h", "arzuca", "nine_table", "bermvda"];
-  if (invitees.includes("michael_and_friends")) return ["kidosband"];
+  if (day?.tone === "midnight") {
+    return ["j_sparrow", "broadway", "triple_h", "arzuca", "nine_table", "bermvda"];
+  }
 
   if (berani === "udh_haha") {
     if (isWeekday(day)) {
       const acts: ActivityKey[] = ["pizza_4p", "isabella_steakhouse", "suara_restaurant"];
-      if (day === "jumat_depan") acts.push("manzo");
+      if (day?.isFriday && day.category === "weekday") acts.push("manzo");
       acts.push("singapolah");
       return acts;
     }
     if (effLoc === "jakarta") {
       const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
-      if (day === "minggu_ini") acts.push("sophilia");
-      if (day === "sabtu_ini") acts.push("kidosband");
+      if (day?.isSunday) acts.push("sophilia");
       acts.push("jalan_mall_jakarta");
       return acts;
     }
@@ -251,7 +220,7 @@ export function allowedActivities(opts: {
     if (hasGoltox) out.push("juliette");
     if (hasAndreaOrChristine) out.push("mata_karanjang");
     if ((hasAndreaOrChristine || hasGoltox) && !hasBoth) out.push("suara_restaurant");
-    if (day === "jumat_depan") out.push("manzo");
+    if (day?.isFriday && day.category === "weekday") out.push("manzo");
     if (!hasBoth) out.push("singapolah");
     return out;
   }
@@ -268,7 +237,7 @@ export function allowedActivities(opts: {
   }
   if (effLoc === "jakarta") {
     const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
-    if (day === "minggu_ini") acts.push("sophilia");
+    if (day?.isSunday) acts.push("sophilia");
     acts.push("jalan_mall_jakarta");
     return acts;
   }
@@ -277,14 +246,16 @@ export function allowedActivities(opts: {
 
 export function isFlowComplete(state: {
   berani: BeraniKey | null;
-  day: DayKey | null;
+  day: string | null;
   location: LocationKey | null;
   invitees: InviteeKey[];
   activity: ActivityKey | null;
 }): boolean {
   if (!state.berani) return false;
   if (!state.day) return false;
-  if (needsLocationPage(state.day) && !state.location) return false;
+  const dayOpt = findActiveDayOption(state.day);
+  if (!dayOpt) return false;
+  if (needsLocationPage(dayOpt) && !state.location) return false;
   if (needsInviteesPage(state.berani) && state.invitees.length === 0) return false;
   if (!state.activity) return false;
   return true;

@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import { PageShell } from "@/lib/nav";
 import {
   ACTIVITY_LABELS,
-  DAY_OPTIONS,
   INVITEE_LABELS,
   LOCATION_LABELS,
   BERANI_OPTIONS,
   getAccent,
   isFlowComplete,
 } from "@/lib/options";
+import { findActiveDayOption } from "@/lib/dayOptions";
 import { useFormState } from "@/lib/state";
 
 type SendState = "idle" | "sending" | "sent" | "error";
@@ -78,7 +78,7 @@ export default function PesanPage() {
   }, [sophiaState, state]);
 
   const beraniLabel = BERANI_OPTIONS.find((b) => b.key === state.berani)?.label;
-  const dayOpt = DAY_OPTIONS.find((d) => d.key === state.day);
+  const dayOpt = findActiveDayOption(state.day);
   const locLabel = state.location ? LOCATION_LABELS[state.location] : null;
   const actLabel = state.activity ? ACTIVITY_LABELS[state.activity] : null;
 

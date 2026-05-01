@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { PageShell } from "@/lib/nav";
 import {
@@ -10,6 +10,7 @@ import {
   needsInviteesPage,
   needsLocationPage,
 } from "@/lib/options";
+import { findActiveDayOption } from "@/lib/dayOptions";
 import { useFormState } from "@/lib/state";
 
 const LOC_STYLES: Record<string, { bg: string; fg: string; gradient?: string }> = {
@@ -32,21 +33,23 @@ export default function LokasiPage() {
   const router = useRouter();
   const accent = getAccent(state.berani);
 
+  const dayOpt = useMemo(() => findActiveDayOption(state.day), [state.day]);
+
   useEffect(() => {
     if (!hydrated) return;
     if (!state.berani) router.replace("/");
     else if (!state.day) router.replace("/kapan");
-    else if (!needsLocationPage(state.day)) {
+    else if (!needsLocationPage(dayOpt)) {
       router.replace(needsInviteesPage(state.berani) ? "/siapa" : "/ngapain");
     }
-  }, [hydrated, state.berani, state.day, router]);
+  }, [hydrated, state.berani, state.day, dayOpt, router]);
 
   useEffect(() => {
     router.prefetch("/siapa");
     router.prefetch("/ngapain");
   }, [router]);
 
-  const options = allowedLocations(state.day);
+  const options = allowedLocations(dayOpt);
 
   const nextHref = needsInviteesPage(state.berani) ? "/siapa" : "/ngapain";
 
@@ -61,7 +64,6 @@ export default function LokasiPage() {
           const meta = LOCATION_LABELS[key];
           const style = LOC_STYLES[key];
           const selected = state.location === key;
-          const isSpecialEdition = state.day === "sabtu_ini" && key === "jakarta";
           return (
             <button
               key={key}
@@ -75,7 +77,7 @@ export default function LokasiPage() {
               style={{
                 background: style.gradient ?? style.bg,
                 color: style.fg,
-                borderColor: selected ? accent : isSpecialEdition ? "#CE3D66" : "transparent",
+                borderColor: selected ? accent : "transparent",
                 outline: selected ? `2px solid ${accent}` : "none",
                 outlineOffset: 2,
                 minHeight: 88,
@@ -86,25 +88,6 @@ export default function LokasiPage() {
                 <span className="text-2xl">{meta.emoji}</span>
                 <span>{meta.label}</span>
               </span>
-              {isSpecialEdition ? (
-                <span
-                  aria-hidden
-                  style={{
-                    position: "absolute",
-                    top: -8,
-                    left: 16,
-                    fontSize: 12,
-                    background: "#CE3D66",
-                    color: "#ffffff",
-                    padding: "1px 8px",
-                    borderRadius: 999,
-                    fontWeight: 700,
-                    letterSpacing: 0.5,
-                  }}
-                >
-                  💄
-                </span>
-              ) : null}
             </button>
           );
         })}

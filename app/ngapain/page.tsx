@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { PageShell } from "@/lib/nav";
 import {
@@ -10,6 +10,7 @@ import {
   needsInviteesPage,
   needsLocationPage,
 } from "@/lib/options";
+import { findActiveDayOption } from "@/lib/dayOptions";
 import { useFormState } from "@/lib/state";
 
 export default function NgapainPage() {
@@ -17,13 +18,15 @@ export default function NgapainPage() {
   const router = useRouter();
   const accent = getAccent(state.berani);
 
+  const dayOpt = useMemo(() => findActiveDayOption(state.day), [state.day]);
+
   useEffect(() => {
     if (!hydrated) return;
     if (!state.berani) router.replace("/");
     else if (!state.day) router.replace("/kapan");
-    else if (needsLocationPage(state.day) && !state.location) router.replace("/lokasi");
+    else if (needsLocationPage(dayOpt) && !state.location) router.replace("/lokasi");
     else if (needsInviteesPage(state.berani) && state.invitees.length === 0) router.replace("/siapa");
-  }, [hydrated, state.berani, state.day, state.location, state.invitees.length, router]);
+  }, [hydrated, state.berani, state.day, state.location, state.invitees.length, dayOpt, router]);
 
   useEffect(() => {
     router.prefetch("/pesan");
@@ -31,14 +34,14 @@ export default function NgapainPage() {
 
   const options = allowedActivities({
     berani: state.berani,
-    day: state.day,
+    day: dayOpt,
     location: state.location,
     invitees: state.invitees,
   });
 
   const backHref = (() => {
     if (needsInviteesPage(state.berani)) return "/siapa";
-    if (needsLocationPage(state.day)) return "/lokasi";
+    if (needsLocationPage(dayOpt)) return "/lokasi";
     return "/kapan";
   })();
 
