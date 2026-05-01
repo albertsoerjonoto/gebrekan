@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { PageShell } from "@/lib/nav";
 import {
@@ -10,6 +10,7 @@ import {
   needsInviteesPage,
   needsLocationPage,
 } from "@/lib/options";
+import { findActiveDayOption } from "@/lib/dayOptions";
 import { useFormState } from "@/lib/state";
 
 export default function SiapaPage() {
@@ -17,16 +18,18 @@ export default function SiapaPage() {
   const router = useRouter();
   const accent = getAccent(state.berani);
 
+  const dayOpt = useMemo(() => findActiveDayOption(state.day), [state.day]);
+
   useEffect(() => {
     if (!hydrated) return;
     if (!state.berani) router.replace("/");
     else if (!state.day) router.replace("/kapan");
-    else if (needsLocationPage(state.day) && !state.location) router.replace("/lokasi");
+    else if (needsLocationPage(dayOpt) && !state.location) router.replace("/lokasi");
     else if (!needsInviteesPage(state.berani)) router.replace("/ngapain");
-  }, [hydrated, state.berani, state.day, state.location, router]);
+  }, [hydrated, state.berani, state.day, state.location, dayOpt, router]);
 
-  const options = allowedInvitees(state.day, state.location);
-  const backHref = needsLocationPage(state.day) ? "/lokasi" : "/kapan";
+  const options = allowedInvitees(dayOpt, state.location);
+  const backHref = needsLocationPage(dayOpt) ? "/lokasi" : "/kapan";
 
   return (
     <PageShell

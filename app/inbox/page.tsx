@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import {
   ACTIVITY_LABELS,
   BERANI_OPTIONS,
-  DAY_OPTIONS,
   INVITEE_LABELS,
   LOCATION_LABELS,
 } from "@/lib/options";
+import { findActiveDayOption } from "@/lib/dayOptions";
 
 type EventRow = { ts: string; type: string; page: string | null; field: string | null; value: unknown };
 type SessionRow = {
@@ -30,8 +30,9 @@ function humanizeValue(field: string | null, value: unknown) {
     return o ? o.label : String(value);
   }
   if (field === "day") {
-    const o = DAY_OPTIONS.find((d) => d.key === value);
-    return o ? `${o.emoji} ${o.label} (${o.time})` : String(value);
+    if (typeof value !== "string") return String(value);
+    const o = findActiveDayOption(value);
+    return o ? `${o.emoji} ${o.label} (${o.time}) — ${o.key}` : value;
   }
   if (field === "location" && typeof value === "string") {
     const o = LOCATION_LABELS[value as keyof typeof LOCATION_LABELS];

@@ -12,15 +12,15 @@ import {
 import type {
   ActivityKey,
   BeraniKey,
-  DayKey,
   InviteeKey,
   LocationKey,
 } from "./options";
 import { allowedActivities, allowedInvitees, allowedLocations, isWeekend, needsInviteesPage } from "./options";
+import { findActiveDayOption } from "./dayOptions";
 
 export type FormState = {
   berani: BeraniKey | null;
-  day: DayKey | null;
+  day: string | null;
   location: LocationKey | null;
   invitees: InviteeKey[];
   activity: ActivityKey | null;
@@ -49,7 +49,7 @@ type Ctx = {
   sessionId: string;
   hydrated: boolean;
   setBerani: (v: BeraniKey) => void;
-  setDay: (v: DayKey) => void;
+  setDay: (v: string) => void;
   setLocation: (v: LocationKey | null) => void;
   toggleInvitee: (v: InviteeKey) => void;
   setActivity: (v: ActivityKey | null) => void;
@@ -79,7 +79,18 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as Partial<FormState>;
-        setState({ ...EMPTY, ...parsed, invitees: parsed.invitees ?? [] });
+        const persistedDay = parsed.day ?? null;
+        const dayOpt = findActiveDayOption(persistedDay);
+        const day = dayOpt ? persistedDay : null;
+        const dayCleared = !!persistedDay && !dayOpt;
+        setState({
+          ...EMPTY,
+          ...parsed,
+          day,
+          location: dayCleared ? null : parsed.location ?? null,
+          invitees: dayCleared ? [] : parsed.invitees ?? [],
+          activity: dayCleared ? null : parsed.activity ?? null,
+        });
       }
       let sid = localStorage.getItem(SESSION_KEY);
       if (!sid) {
@@ -152,19 +163,21 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   );
 
   const setDay = useCallback(
-    (v: DayKey) => {
+    (v: string) => {
+      const dayOpt = findActiveDayOption(v);
+      if (!dayOpt) return;
       setState((s) => {
         let nextLocation = s.location;
-        if (!isWeekend(v)) nextLocation = null;
+        if (!isWeekend(dayOpt)) nextLocation = null;
         else {
-          const allowed = allowedLocations(v);
+          const allowed = allowedLocations(dayOpt);
           if (nextLocation && !allowed.includes(nextLocation)) nextLocation = null;
         }
-        const allowedInv = allowedInvitees(v, nextLocation);
+        const allowedInv = allowedInvitees(dayOpt, nextLocation);
         const nextInvitees = s.invitees.filter((i) => allowedInv.includes(i));
         const allowedAct = allowedActivities({
           berani: s.berani,
-          day: v,
+          day: dayOpt,
           location: nextLocation,
           invitees: nextInvitees,
         });
@@ -185,11 +198,12 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
   const setLocation = useCallback(
     (v: LocationKey | null) => {
       setState((s) => {
-        const allowedInv = allowedInvitees(s.day, v);
+        const dayOpt = findActiveDayOption(s.day);
+        const allowedInv = allowedInvitees(dayOpt, v);
         const nextInvitees = s.invitees.filter((i) => allowedInv.includes(i));
         const allowedAct = allowedActivities({
           berani: s.berani,
-          day: s.day,
+          day: dayOpt,
           location: v,
           invitees: nextInvitees,
         });
@@ -207,9 +221,10 @@ export function StateProvider({ children }: { children: React.ReactNode }) {
         if (!needsInviteesPage(s.berani)) return s;
         const has = s.invitees.includes(v);
         const nextInvitees = has ? s.invitees.filter((x) => x !== v) : [...s.invitees, v];
+        const dayOpt = findActiveDayOption(s.day);
         const allowedAct = allowedActivities({
           berani: s.berani,
-          day: s.day,
+          day: dayOpt,
           location: s.location,
           invitees: nextInvitees,
         });

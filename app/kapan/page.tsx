@@ -1,16 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { PageShell } from "@/lib/nav";
-import { DAY_OPTIONS, getAccent, needsLocationPage, needsInviteesPage } from "@/lib/options";
-import type { DayKey } from "@/lib/options";
+import { getAccent, needsLocationPage, needsInviteesPage } from "@/lib/options";
+import type { DayOption } from "@/lib/options";
+import { getActiveDayOptions } from "@/lib/dayOptions";
 import { useFormState } from "@/lib/state";
 
 export default function KapanPage() {
   const { state, setDay, hydrated } = useFormState();
   const router = useRouter();
   const accent = getAccent(state.berani);
+
+  const dayOptions = useMemo(() => getActiveDayOptions(new Date()), []);
 
   useEffect(() => {
     if (hydrated && !state.berani) router.replace("/");
@@ -24,7 +27,7 @@ export default function KapanPage() {
 
   const title = state.berani === "udh_haha" ? "wow. kapan u free" : "gpp. kapan u free";
 
-  const nextHrefFor = (day: DayKey) => {
+  const nextHrefFor = (day: DayOption) => {
     if (needsLocationPage(day)) return "/lokasi";
     if (needsInviteesPage(state.berani)) return "/siapa";
     return "/ngapain";
@@ -37,28 +40,27 @@ export default function KapanPage() {
       back={{ href: "/" }}
     >
       <div className="flex flex-col gap-3">
-        {DAY_OPTIONS.map((opt) => {
+        {dayOptions.map((opt) => {
           const selected = state.day === opt.key;
           const bg =
             opt.tone === "midnight" ? "#03060f" : opt.tone === "night" ? "#0f1930" : "#ffd89b";
           const baseText = opt.tone === "day" ? "#111111" : "#ffffff";
           const timeColor =
             opt.tone === "midnight" ? "#7a93d6" : opt.tone === "night" ? "#ffe58a" : "#111111";
-          const isSpecialEdition = opt.key === "sabtu_ini";
           return (
             <button
               key={opt.key}
               type="button"
               onClick={() => {
                 setDay(opt.key);
-                router.push(nextHrefFor(opt.key));
+                router.push(nextHrefFor(opt));
               }}
               className="option-card"
               data-selected={selected}
               style={{
                 background: bg,
                 color: baseText,
-                borderColor: selected ? accent : isSpecialEdition ? "#CE3D66" : "transparent",
+                borderColor: selected ? accent : "transparent",
                 outline: selected ? `2px solid ${accent}` : "none",
                 outlineOffset: 2,
                 position: "relative",
@@ -71,25 +73,6 @@ export default function KapanPage() {
               <span className="text-sm font-bold" style={{ color: timeColor }}>
                 {opt.time}
               </span>
-              {isSpecialEdition ? (
-                <span
-                  aria-hidden
-                  style={{
-                    position: "absolute",
-                    top: -8,
-                    left: 16,
-                    fontSize: 12,
-                    background: "#CE3D66",
-                    color: "#ffffff",
-                    padding: "1px 8px",
-                    borderRadius: 999,
-                    fontWeight: 700,
-                    letterSpacing: 0.5,
-                  }}
-                >
-                  💄
-                </span>
-              ) : null}
             </button>
           );
         })}

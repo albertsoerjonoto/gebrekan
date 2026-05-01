@@ -1,21 +1,20 @@
 import {
   ACTIVITY_LABELS,
   BERANI_OPTIONS,
-  DAY_OPTIONS,
   INVITEE_LABELS,
   LOCATION_LABELS,
 } from "./options";
 import type {
   ActivityKey,
   BeraniKey,
-  DayKey,
   InviteeKey,
   LocationKey,
 } from "./options";
+import { findActiveDayOption } from "./dayOptions";
 
 type SubmissionState = {
   berani: BeraniKey | string | null;
-  day: DayKey | string | null;
+  day: string | null;
   location: LocationKey | string | null;
   invitees: (InviteeKey | string)[];
   activity: ActivityKey | string | null;
@@ -32,8 +31,10 @@ export function formatSummary(
 } {
   const beraniLabel =
     BERANI_OPTIONS.find((b) => b.key === state.berani)?.label ?? state.berani ?? "-";
-  const dayOpt = DAY_OPTIONS.find((d) => d.key === state.day);
-  const dayLabel = dayOpt ? `${dayOpt.emoji} ${dayOpt.label} (${dayOpt.time})` : state.day ?? "-";
+  const dayOpt = findActiveDayOption(state.day);
+  const dayLabel = dayOpt
+    ? `${dayOpt.emoji} ${dayOpt.label} (${dayOpt.time}) — ${dayOpt.key}`
+    : state.day ?? "-";
   const locMeta = state.location
     ? LOCATION_LABELS[state.location as LocationKey]
     : null;
@@ -48,7 +49,7 @@ export function formatSummary(
   const actLabel = actMeta ? `${actMeta.emoji} ${actMeta.label}` : state.activity ?? "-";
   const message = (state.message ?? "").trim();
 
-  const subject = `${brand}: ${dayOpt?.label ?? "??"} — ${actMeta?.label ?? "??"}`;
+  const subject = `${brand}: ${dayOpt?.label ?? state.day ?? "??"} — ${actMeta?.label ?? "??"}`;
 
   const lines = [
     `mood     : ${beraniLabel}`,
