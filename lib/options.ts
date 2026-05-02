@@ -82,7 +82,8 @@ export type ActivityKey =
   | "arzuca"
   | "nine_table"
   | "bermvda"
-  | "bxsea";
+  | "bxsea"
+  | "kidzania";
 
 export const ACTIVITY_LABELS: Record<
   ActivityKey,
@@ -116,6 +117,7 @@ export const ACTIVITY_LABELS: Record<
   nine_table: { label: "nine table", emoji: "🍷", mapsUrl: "https://www.google.com/maps/search/Nine+Table+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
   bermvda: { label: "bermvda", emoji: "☕", mapsUrl: "https://www.google.com/maps/search/Bermvda+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
   bxsea: { label: "bxsea", emoji: "🐠", mapsUrl: "https://www.google.com/maps/search/BxSea+Aquarium+QBig+BSD+City+Tangerang" },
+  kidzania: { label: "kidzania", emoji: "🧒", mapsUrl: "https://www.google.com/maps/search/KidZania+Jakarta+Pacific+Place+SCBD" },
 };
 
 export function isWeekend(day: DayOption | null | undefined): boolean {
@@ -197,7 +199,7 @@ export function allowedActivities(opts: {
       return acts;
     }
     if (effLoc === "jakarta") {
-      const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
+      const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz", "kidzania"];
       if (day?.isSunday) acts.push("sophilia");
       acts.push("jalan_mall_jakarta");
       return acts;
@@ -236,7 +238,7 @@ export function allowedActivities(opts: {
     });
   }
   if (effLoc === "jakarta") {
-    const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz"];
+    const acts: ActivityKey[] = ["faunaland", "jetski", "karting_jakarta", "skorz", "kidzania"];
     if (day?.isSunday) acts.push("sophilia");
     acts.push("jalan_mall_jakarta");
     return acts;
