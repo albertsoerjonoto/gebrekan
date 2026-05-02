@@ -117,7 +117,7 @@ export const ACTIVITY_LABELS: Record<
   nine_table: { label: "nine table", emoji: "🍷", mapsUrl: "https://www.google.com/maps/search/Nine+Table+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
   bermvda: { label: "bermvda", emoji: "☕", mapsUrl: "https://www.google.com/maps/search/Bermvda+One+Satrio+Jl+Prof+Dr+Satrio+Kuningan+Jakarta+Selatan" },
   bxsea: { label: "bxsea", emoji: "🐠", mapsUrl: "https://www.google.com/maps/search/BxSea+Aquarium+QBig+BSD+City+Tangerang" },
-  kidzania: { label: "kidzania", emoji: "🧒", mapsUrl: "https://www.google.com/maps/search/KidZania+Jakarta+Pacific+Place+SCBD" },
+  kidzania: { label: "kidzania", emoji: "👮", mapsUrl: "https://www.google.com/maps/search/KidZania+Jakarta+Pacific+Place+SCBD" },
 };
 
 export function isWeekend(day: DayOption | null | undefined): boolean {
